@@ -61,13 +61,13 @@ const HttpHandler = function () {
             "trans is undefined or protocol is undefined");
         let content = {str:""};
         this.m_protocol.encode(this.m_task_info.get_params(), content);
-        console.log(content);
+        // console.log(content);
         return this.m_trans.do_trans(content.str, this.handle_msg_response.bind(this));
     };
     this.handle_request_token_result = function (result) {
         console.log(result);
         if(ErrorCode.Success === result.get_error()) {
-            console.log(result);
+            // console.log(result);
             g_user_info.set_token(result.get_token());
             g_user_info.set_secret_key(result.get_secret_key());
             g_user_info.set_sign_method(result.get_sign_method());

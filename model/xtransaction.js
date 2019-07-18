@@ -1,7 +1,7 @@
 'use strict';
 
 const {sha256} = require('js-sha256');
-const ByteBuffer = require("ByteBuffer");
+const ByteBuffer = require("../base/ByteBuffer");
 const {StringUtil} = require("../base/string_util");
 
 class XTransactionHeader {

@@ -249,12 +249,9 @@ class RequestTokenCmd extends Protocol {
         }
 
         const func_call_back = task_info.get_callback();
-        if (undefined === func_call_back) {
-            const {http_handler_instance} = require("./http_handler");
-            http_handler_instance.handle_request_token_result(result);
-            return;
-        }
-        func_call_back(result);
+        const {http_handler_instance} = require("./http_handler");
+        http_handler_instance.handle_request_token_result(result);
+        func_call_back && func_call_back();
         return;
     };
 }
@@ -280,13 +277,10 @@ class CreateAccountCmd extends Protocol {
         }
 
         const func_call_back = task_info.get_callback();
-        if (undefined === func_call_back) {
             const {http_handler_instance} = require("./http_handler");
             http_handler_instance.handle_create_account_result(result);
+            func_call_back && func_call_back();
             return false;
-        }
-        func_call_back(result);
-        return true;
     }
 }
 
@@ -316,13 +310,10 @@ class AccountInfoCmd  extends Protocol {
         }
 
         const func_call_back = task_info.get_callback();
-        if (undefined === func_call_back) {
             const {http_handler_instance} = require("./http_handler");
             http_handler_instance.handle_account_info_result(result);
+            func_call_back && func_call_back();
             return false;
-        }
-        func_call_back(result);
-        return true;
     }
 }
 
@@ -400,13 +391,10 @@ class AccountTransactionCmd extends Protocol {
             target_action.set_action_size(target_action_data['action_size']);
         }
         const func_call_back = task_info.get_callback();
-        if (undefined === func_call_back) {
             const {http_handler_instance} = require("./http_handler");
             http_handler_instance.handle_account_transaction_result(result);
+            func_call_back && func_call_back();
             return false;
-        }
-        func_call_back(result);
-        return true;
     }
 }
 
@@ -447,12 +435,10 @@ class TransferCmd extends Protocol {
         result.set_error(Number(error_no));
         result.set_err_msg(error_msg);
         const func_call_back = task_info.get_callback();
-        if (undefined === func_call_back) {
             const {http_handler_instance} = require("./http_handler");
             http_handler_instance.handle_transfer_result(result);
+            func_call_back && func_call_back();
             return false;
-        }
-        func_call_back(result);
     }
 }
 

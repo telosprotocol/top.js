@@ -3,7 +3,7 @@
 const {randomBytes} = require('crypto');
 const {TaskInfo} = require('./task_info');
 let {XTransactionType,GLOBAL,get_sequence_id} = require('../model/global_defination');
-const ByteBuffer = require('ByteBuffer');
+const ByteBuffer = require('../base/ByteBuffer');
 let trans_module = require('../model/xtransaction');
 let {XActionType} = require('../model/top_chain_types');
 const secp256k1 = require('secp256k1');
@@ -116,6 +116,7 @@ const APIMethodImpl = function () {
         if ("" === user_info.get_account() || "" === user_info.get_token()) {
             return false;
         }
+        
         let task_info = new TaskInfo();
         this.set_user_info(task_info,user_info,CMD.ACCOUNT_INFO,func,false);
         task_info.set_params("account",user_info.get_account());

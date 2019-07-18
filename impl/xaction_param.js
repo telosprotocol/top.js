@@ -1,6 +1,6 @@
 'use strict';
 
-const ByteBuffer = require('ByteBuffer');
+const ByteBuffer = require('../base/ByteBuffer');
 
 let ActionAssetOutParam = function (token_name,amount,memo) {
     this.m_token_name = token_name;

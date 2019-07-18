@@ -52,7 +52,7 @@ class TransHttp extends TransBase {
         super(host);
     }
     do_trans(content,rsp_handle_callback) {
-        console.log("http://" + this.m_host + this.m_uri);
+        // console.log("http://" + this.m_host + this.m_uri);
 
         return axios.post(this.m_uri, content)
             .then((response) => {
