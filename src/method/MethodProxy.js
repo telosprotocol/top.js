@@ -27,15 +27,14 @@ class MethodProxy {
 
                     /* eslint-disable no-inner-declarations */
                     function RpcMethod() {
-                        // method.setArguments(arguments);
-
+                        method.setArguments(arguments);
                         return method.execute();
                     }
                     /* eslint-enable no-inner-declarations */
 
                     RpcMethod.method = method;
                     RpcMethod.request = function() {
-                        // method.setArguments(arguments);
+                        method.setArguments(arguments);
 
                         return method;
                     };

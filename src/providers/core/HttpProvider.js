@@ -39,14 +39,22 @@ class HttpProvider {
      *
      * @returns {Promise<any>}
      */
-    async send(method) {
-        console.log('http provider send ', method);
+    async send(method, parameters) {
+        const params = new URLSearchParams();
+        console.log('http provider send request, request method > ', method);
+        for (let key in parameters) {
+            if (parameters.hasOwnProperty(key)) {
+                params.append(key, parameters[key]);
+            }
+        }
+        console.log('http provider send request, parms > ', params.toString());
         const config = {
             url: this.host,
             method: 'post',
             headers: this.headers,
             timeout: this.timeout,
-            withCredentials: this.withCredentials
+            withCredentials: this.withCredentials,
+            data: params
         };
         if (this.httpAgent) {
             config.httpAgent = this.httpAgent;
@@ -58,7 +66,7 @@ class HttpProvider {
         if (response.status !== 200) {
             throw new Error('request failed, status ' + response.status);
         }
-
+        console.log('http provider get response > ', JSON.stringify(response.data));
         return response.data;
     }
 }
