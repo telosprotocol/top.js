@@ -1,6 +1,7 @@
 
 const AbstractMethod = require('../../abstract/AbstractMethod');
 const xActionType = require('../../model/XActionType');
+const xTransactionType = require('../../model/XTransactionType');
 
 class CreateAccountMethod extends AbstractMethod {
 
@@ -8,7 +9,7 @@ class CreateAccountMethod extends AbstractMethod {
         super({
             methodName: 'send_transaction',
             use_transaction: true,
-            transationType: 0,
+            transationType: xTransactionType.CreateUserAccount,
             sourceAction: xActionType.SourceNull,
             targetAction: xActionType.CreateUserAccount,
         }, moduleInstance);

@@ -6,6 +6,7 @@ class Account{
         this.privateKey = options.privateKey;
         this.publicKey = options.publicKey;
         this._sequence_id = options.sequence_id || Date.now();
+        this.token = '';
     }
 
     get sequence_id() {

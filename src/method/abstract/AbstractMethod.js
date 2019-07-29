@@ -6,7 +6,7 @@ const XAction = require('../lib/XAction');
 const StringUtil = require("../../utils");
 const secp256k1 = require('secp256k1');
 const XActionType = require('../model/XActionType');
-const ByteBuffer = require('ByteBuffer');
+const ByteBuffer = require('../../utils/ByteBuffer');
 
 class AbstractMethod {
 
@@ -98,6 +98,13 @@ class AbstractMethod {
         const privateKey = this.moduleInstance.defaultAccount.privateKey;
         const publicKey = this.moduleInstance.defaultAccount.publicKey;
 
+        // const privateKey = StringUtil.hex2bytes('47ce7e773f76df0a43ebfb243e7fffcc0f67a37fd4b8c05700ec107e2c25b7a5');
+        
+        // const address = 'T-0-1B75FnoqfrNu6fuADADzwohLdzJ7Lm29bV';
+        // const publicKey = '0x0254b854c2e999a1b1db88e275748b1acbdcd2bc8eb77403dcaf7d2db23acbba2b';
+        // const sequence_id = '1564394118863';
+        // const token = 'df8480d2-db45-4110-86ae-ea7c165b721d';
+
         let parametersArray = cloneDeep([...methodArguments]);
         let callback = null;
 
@@ -109,7 +116,9 @@ class AbstractMethod {
         let baseArgs = {
             version: '1.0',
             account_address: address,
-            method: this._methodName,
+            token,
+            // method: this._methodName,
+            method: true === this.use_transaction ? 'send_transaction' : this._methodName,
             sequence_id
         }
         Object.assign(parameters, baseArgs);
@@ -118,21 +127,22 @@ class AbstractMethod {
             version: '1.0',
             method: true === this.use_transaction ? 'send_transaction' : this._methodName,
             account_address: address,
-            token,
             sequence_id,
-            'rpc_signature::secretkey_key_': '',
-            'rpc_signature::method_key_': '',
-            'rpc_signature::version_key_': ''
+            // 'rpc_signature::secretkey_key_': '',
+            // 'rpc_signature::method_key_': '',
+            // 'rpc_signature::version_key_': '',
         }
-        const transAction = new XTransaction();
-        transAction.set_transaction_type(this._transationType);
-        transAction.set_last_trans_nonce(0);
-        const cur_timestamp = Math.round(new Date() / 1000);
-        transAction.set_fire_timestamp(cur_timestamp);
-        transAction.set_expire_duration(100);
-        transAction.set_last_trans_hash("0xF6E9BE5D70632CF5");
         
         if(this._use_transaction) {
+            const transAction = new XTransaction();
+            transAction.set_transaction_type(this._transationType);
+            // TODO: user nonce
+            transAction.set_last_trans_nonce(0);
+            const cur_timestamp = Math.round(new Date() / 1000);
+            transAction.set_fire_timestamp(cur_timestamp);
+            transAction.set_expire_duration(100);
+            transAction.set_last_trans_hash("0xF6E9BE5D70632CF5");
+
             const sourceAction = new XAction();
             sourceAction.set_action_type(XActionType.SourceNull);
             sourceAction.set_account_addr(address);
@@ -157,13 +167,21 @@ class AbstractMethod {
             stream.byte(secp256k1_sign.recovery).byteArray(secp256k1_sign.signature,secp256k1_sign.signature.length);
             const stream_array =  new Uint8Array(stream.pack());
             const auth_hex = "0x" + StringUtil.bytes2hex(stream_array);
+            
+            sourceAction.set_action_param(StringUtil.bytes2hex(new Uint8Array(0)));
+            targetAction.set_action_param("0x" + StringUtil.bytes2hex(_a_params));
+
             transAction.set_authorization(auth_hex);
+            transAction.set_transaction_hash(hash.hex);
             transAction.set_public_key("0x" + StringUtil.bytes2hex(publicKey));
+            // transAction.set_public_key(publicKey);
+
+            params.params = transAction;
         }
 
 
 
-        parameters.body = JSON.stringify(parameters);
+        parameters.body = JSON.stringify(params);
         this._arguments = {
             callback,
             parameters

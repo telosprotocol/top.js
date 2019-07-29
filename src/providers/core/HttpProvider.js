@@ -47,7 +47,7 @@ class HttpProvider {
                 params.append(key, parameters[key]);
             }
         }
-        console.log('http provider send request, parms > ', params.toString());
+        // console.log('http provider send request, parms > ', params.toString());
         const config = {
             url: this.host,
             method: 'post',
@@ -62,12 +62,27 @@ class HttpProvider {
         if (this.httpsAgent) {
             config.httpsAgent = this.httpsAgent;
         }
-        const response = await axios(config);
-        if (response.status !== 200) {
-            throw new Error('request failed, status ' + response.status);
+        try {
+            let str = '';
+            for (const key in parameters) {
+                if (parameters.hasOwnProperty(key)) {
+                    str += (0 === str.length ? "" : "&");
+                    str += encodeURI(key);
+                    str += "=";
+                    str += parameters[key];
+                }
+            }
+            // const response = await axios(config);
+            console.log('str > ', str);
+            const response = await axios.post(this.host, '&' + str);
+            if (response.status !== 200) {
+                throw new Error('request failed, status ' + response.status);
+            }
+            console.log('http provider get response > ', JSON.stringify(response.data));
+            return response.data;
+        } catch (error) {
+            console.error('http provider error > ', error);
         }
-        console.log('http provider get response > ', JSON.stringify(response.data));
-        return response.data;
     }
 }
 

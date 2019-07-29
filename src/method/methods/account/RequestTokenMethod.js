@@ -20,6 +20,9 @@ class RequestTokenMethod extends AbstractMethod {
      * @returns {*}
      */
     afterExecution(response) {
+        if (response.errno === 0) {
+            this.moduleInstance.defaultAccount.token = response.data.token;
+        }
         return response;
     }
 }
