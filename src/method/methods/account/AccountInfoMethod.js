@@ -5,7 +5,8 @@ class AccountInfoMethod extends AbstractMethod {
 
     constructor(moduleInstance) {
         super({
-            methodName: 'account_info'
+            methodName: 'account_info',
+            use_transaction: false
         }, moduleInstance);
     }
 }

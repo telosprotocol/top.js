@@ -7,3 +7,4 @@ exports.createAccount = require('./account/CreateAccountMethod');
 
 // transaction
 exports.requestToken = require('./account/RequestTokenMethod');
+exports.transfer = require('./account/TransferMethod');

@@ -19,7 +19,7 @@ class AbstractMethod {
         this._use_transaction = argsObj.use_transaction | false;
         this._transationType = argsObj.transationType;
         this._sourceType = argsObj.sourceType;
-        this._targetType = argsObj._targetType;
+        this._targetType = argsObj.targetType;
         this._arguments = {
             parameters: []
         };
@@ -91,19 +91,14 @@ class AbstractMethod {
      * @param {IArguments} methodArguments
      */
     setArguments(methodArguments) {
+        console.log('setArguments, method > ', this._methodName);
         
         const address = this.moduleInstance.defaultAccount.address;
+        let targetAddress = this.moduleInstance.defaultAccount.address;
         const sequence_id = this.moduleInstance.defaultAccount.sequence_id;
         const token = this.moduleInstance.defaultAccount.token;
         const privateKey = this.moduleInstance.defaultAccount.privateKey;
         const publicKey = this.moduleInstance.defaultAccount.publicKey;
-
-        // const privateKey = StringUtil.hex2bytes('47ce7e773f76df0a43ebfb243e7fffcc0f67a37fd4b8c05700ec107e2c25b7a5');
-        
-        // const address = 'T-0-1B75FnoqfrNu6fuADADzwohLdzJ7Lm29bV';
-        // const publicKey = '0x0254b854c2e999a1b1db88e275748b1acbdcd2bc8eb77403dcaf7d2db23acbba2b';
-        // const sequence_id = '1564394118863';
-        // const token = 'df8480d2-db45-4110-86ae-ea7c165b721d';
 
         let parametersArray = cloneDeep([...methodArguments]);
         let callback = null;
@@ -112,7 +107,11 @@ class AbstractMethod {
             callback = parametersArray.pop();
         }
         // 调用子类的设置参数方法
-        let parameters = this.addArgsKey(parametersArray);
+        // this.addArgsKey(parametersArray);
+        if (parametersArray.length > 0) {
+            targetAddress = parametersArray[0];
+        }
+        let parameters = {};
         let baseArgs = {
             version: '1.0',
             account_address: address,
@@ -144,15 +143,15 @@ class AbstractMethod {
             transAction.set_last_trans_hash("0xF6E9BE5D70632CF5");
 
             const sourceAction = new XAction();
-            sourceAction.set_action_type(XActionType.SourceNull);
+            sourceAction.set_action_type(this._sourceType);
             sourceAction.set_account_addr(address);
             sourceAction.set_action_param(new Uint8Array(0));
 
             const targetAction = new XAction();
-            targetAction.set_action_type(XActionType.CreateUserAccount);
-            targetAction.set_account_addr(address);
+            targetAction.set_action_type(this._targetType);
+            targetAction.set_account_addr(targetAddress);
             let sb =new ByteBuffer().littleEndian();
-            let _a_params = sb.string(address).pack();
+            let _a_params = sb.string(targetAddress).pack();
             targetAction.set_action_param(_a_params);
             
             transAction.set_source_action(sourceAction);
@@ -174,12 +173,13 @@ class AbstractMethod {
             transAction.set_authorization(auth_hex);
             transAction.set_transaction_hash(hash.hex);
             transAction.set_public_key("0x" + StringUtil.bytes2hex(publicKey));
-            // transAction.set_public_key(publicKey);
 
             params.params = transAction;
         }
 
-
+        if (this._methodName === 'account_info') {
+            params.params = { account: address };
+        }
 
         parameters.body = JSON.stringify(params);
         this._arguments = {

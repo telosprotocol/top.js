@@ -41,7 +41,7 @@ class HttpProvider {
      */
     async send(method, parameters) {
         const params = new URLSearchParams();
-        console.log('http provider send request, request method > ', method);
+        // console.log('http provider send request, request method > ', method);
         for (let key in parameters) {
             if (parameters.hasOwnProperty(key)) {
                 params.append(key, parameters[key]);
@@ -73,7 +73,7 @@ class HttpProvider {
                 }
             }
             // const response = await axios(config);
-            console.log('str > ', str);
+            // console.log('str > ', str);
             const response = await axios.post(this.host, '&' + str);
             if (response.status !== 200) {
                 throw new Error('request failed, status ' + response.status);
