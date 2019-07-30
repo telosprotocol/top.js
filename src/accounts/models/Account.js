@@ -7,10 +7,20 @@ class Account{
         this.publicKey = options.publicKey;
         this._sequence_id = options.sequence_id || Date.now();
         this.token = '';
+        this.nonce = 0;
+        this.last_hash = '';
+        this.last_hash_xxhash64 = '';
+        this.last_unit_height = 0;
+        this.balance = 0;
     }
 
     get sequence_id() {
-        return this._sequence_id + 1;
+        this._sequence_id = this._sequence_id + 1;
+        return this._sequence_id;
+    }
+
+    set sequence_id(sequence_id) {
+        this._sequence_id = sequence_id;
     }
 }
 

@@ -1,12 +1,6 @@
 
 const isFunction = require('lodash/isFunction');
 const cloneDeep = require('lodash/cloneDeep');
-const XTransaction = require('../lib/XTransaction');
-const XAction = require('../lib/XAction');
-const StringUtil = require("../../utils");
-const secp256k1 = require('secp256k1');
-const XActionType = require('../model/XActionType');
-const ByteBuffer = require('../../utils/ByteBuffer');
 
 class AbstractMethod {
 
@@ -69,7 +63,7 @@ class AbstractMethod {
     }
 
     /**
-     * This method will be executed fot add arguments key.
+     * This method will be executed for get args.
      *
      * @method addArgsKey
      *
@@ -77,7 +71,7 @@ class AbstractMethod {
      *
      * @returns {Object}
      */
-    addArgsKey(methodArguments) {
+    getArgs(methodArguments) {
         return {};
     }
 
@@ -92,13 +86,6 @@ class AbstractMethod {
      */
     setArguments(methodArguments) {
         console.log('setArguments, method > ', this._methodName);
-        
-        const address = this.moduleInstance.defaultAccount.address;
-        let targetAddress = this.moduleInstance.defaultAccount.address;
-        const sequence_id = this.moduleInstance.defaultAccount.sequence_id;
-        const token = this.moduleInstance.defaultAccount.token;
-        const privateKey = this.moduleInstance.defaultAccount.privateKey;
-        const publicKey = this.moduleInstance.defaultAccount.publicKey;
 
         let parametersArray = cloneDeep([...methodArguments]);
         let callback = null;
@@ -107,84 +94,11 @@ class AbstractMethod {
             callback = parametersArray.pop();
         }
         // 调用子类的设置参数方法
-        // this.addArgsKey(parametersArray);
-        if (parametersArray.length > 0) {
-            targetAddress = parametersArray[0];
-        }
-        let parameters = {};
-        let baseArgs = {
-            version: '1.0',
-            account_address: address,
-            token,
-            // method: this._methodName,
-            method: true === this.use_transaction ? 'send_transaction' : this._methodName,
-            sequence_id
-        }
-        Object.assign(parameters, baseArgs);
+        let _parameters = this.getArgs(parametersArray);
 
-        const params = {
-            version: '1.0',
-            method: true === this.use_transaction ? 'send_transaction' : this._methodName,
-            account_address: address,
-            sequence_id,
-            // 'rpc_signature::secretkey_key_': '',
-            // 'rpc_signature::method_key_': '',
-            // 'rpc_signature::version_key_': '',
-        }
-        
-        if(this._use_transaction) {
-            const transAction = new XTransaction();
-            transAction.set_transaction_type(this._transationType);
-            // TODO: user nonce
-            transAction.set_last_trans_nonce(0);
-            const cur_timestamp = Math.round(new Date() / 1000);
-            transAction.set_fire_timestamp(cur_timestamp);
-            transAction.set_expire_duration(100);
-            transAction.set_last_trans_hash("0xF6E9BE5D70632CF5");
-
-            const sourceAction = new XAction();
-            sourceAction.set_action_type(this._sourceType);
-            sourceAction.set_account_addr(address);
-            sourceAction.set_action_param(new Uint8Array(0));
-
-            const targetAction = new XAction();
-            targetAction.set_action_type(this._targetType);
-            targetAction.set_account_addr(targetAddress);
-            let sb =new ByteBuffer().littleEndian();
-            let _a_params = sb.string(targetAddress).pack();
-            targetAction.set_action_param(_a_params);
-            
-            transAction.set_source_action(sourceAction);
-            transAction.set_target_action(targetAction);
-
-            transAction.set_digest();
-            const hash =  transAction.get_transaction_hash();
-            const hash_buffer = Buffer.from(hash.array);
-            const private_key_buffer = Buffer.from(privateKey);
-            const secp256k1_sign = secp256k1.sign(hash_buffer, private_key_buffer);
-            let stream = new ByteBuffer().littleEndian();
-            stream.byte(secp256k1_sign.recovery).byteArray(secp256k1_sign.signature,secp256k1_sign.signature.length);
-            const stream_array =  new Uint8Array(stream.pack());
-            const auth_hex = "0x" + StringUtil.bytes2hex(stream_array);
-            
-            sourceAction.set_action_param(StringUtil.bytes2hex(new Uint8Array(0)));
-            targetAction.set_action_param("0x" + StringUtil.bytes2hex(_a_params));
-
-            transAction.set_authorization(auth_hex);
-            transAction.set_transaction_hash(hash.hex);
-            transAction.set_public_key("0x" + StringUtil.bytes2hex(publicKey));
-
-            params.params = transAction;
-        }
-
-        if (this._methodName === 'account_info') {
-            params.params = { account: address };
-        }
-
-        parameters.body = JSON.stringify(params);
         this._arguments = {
             callback,
-            parameters
+            parameters: _parameters,
         };
     }
 }
