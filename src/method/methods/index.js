@@ -4,6 +4,7 @@
 // Account
 exports.accountInfo = require('./account/AccountInfoMethod');
 exports.createAccount = require('./account/CreateAccountMethod');
+exports.accountTransaction = require('./account/AccountTransactionMethod');
 
 // transaction
 exports.requestToken = require('./account/RequestTokenMethod');

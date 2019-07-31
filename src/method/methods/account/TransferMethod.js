@@ -57,7 +57,7 @@ class TransferMethod extends AbstractMethod {
         const targetAddress = txArgs['to'];
         const txData = txArgs['data'];
         const amont = txArgs['amont'];
-        const txActionParam = actionParam.ActionAssetOutParam('', 15, '');
+        const txActionParam = actionParam.ActionAssetOutParam('', amont, txData);
         
         const transAction = new XTransaction();
         transAction.set_transaction_type(xTransactionType.Transfer);
