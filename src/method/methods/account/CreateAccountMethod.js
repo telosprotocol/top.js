@@ -59,6 +59,7 @@ class CreateAccountMethod extends AbstractMethod {
         transAction.set_fire_timestamp(cur_timestamp);
         transAction.set_expire_duration(100);
         transAction.set_last_trans_hash("0xF6E9BE5D70632CF5");
+        transAction.set_deposit(100000);
 
         const sourceAction = new XAction();
         sourceAction.set_action_type(xActionType.SourceNull);

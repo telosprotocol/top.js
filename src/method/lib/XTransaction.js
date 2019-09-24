@@ -16,6 +16,7 @@ class XTransactionHeader {
         this.from_account_id = 0;
         this.gas_price = 0;
         this.gas_limit = 0;
+        this.deposit = 0;
         this.expire_duration = 0;
         this.fire_timestamp = 0;
         this.trans_random_nounce = 0;
@@ -41,8 +42,9 @@ class XTransactionHeader {
             .int64(this.from_account_id)
             .ushort(this.to_network_id)
             .ushort(this.from_network_id)
-            .uint32(this.gas_price)
-            .uint32(this.gas_limit)
+            .uint32(this.deposit)
+            // .uint32(this.gas_price)
+            // .uint32(this.gas_limit)
             .ushort(this.expire_duration)
             .int64(this.fire_timestamp)
             .uint32(this.trans_random_nounce)
@@ -110,6 +112,12 @@ class XTransactionHeader {
     }
     set_gas_limit(gas_limit) {
         this.gas_limit = gas_limit;
+    }
+    set_deposit(deposit) {
+        this.deposit = deposit;
+    }
+    get_deposit() {
+        return this.deposit;
     }
     get_expire_duration() {
         return this.expire_duration;
