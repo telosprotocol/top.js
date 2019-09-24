@@ -1,6 +1,7 @@
 'use strict';
 
 const ByteBuffer = require("../../utils/ByteBuffer");
+const {sha256} = require('js-sha256');
 
 class XAction {
     constructor() {
@@ -31,6 +32,16 @@ class XAction {
 
         const end_pos = new Uint8Array(stream.pack()).length;
         return end_pos - begin_pos;
+    }
+
+    set_digest() {
+        let stream = new ByteBuffer().littleEndian();
+        this.serialize_write(stream);
+        let hash = sha256.create();
+        hash.update(stream.pack());
+        const hash_array = hash.array();
+        const hash_hex = hash.hex();
+        return {array:hash_array,hex:"0x" + hash_hex};
     }
 
     get_action_hash() {

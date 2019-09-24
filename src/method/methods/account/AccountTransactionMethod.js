@@ -20,8 +20,13 @@ class AccountTransactionMethod extends AbstractMethod {
      * @returns {Object}
      */
     getArgs(methodArguments) {
-        let { address, sequence_id, token, last_hash, } = this.moduleInstance.defaultAccount;
-
+        let {
+            account,
+            txHash
+        } = methodArguments[0] || {};
+        account = account ? account : this.moduleInstance.defaultAccount;
+        let { address, sequence_id, token, last_hash, } = account;
+        txHash = txHash ? txHash : last_hash;
         let parameters = {
             version: '1.0',
             account_address: address,
@@ -38,9 +43,6 @@ class AccountTransactionMethod extends AbstractMethod {
                 account: address,
                 tx_hash: last_hash
             }
-            // 'rpc_signature::secretkey_key_': '',
-            // 'rpc_signature::method_key_': '',
-            // 'rpc_signature::version_key_': '',
         }
         parameters.body = JSON.stringify(params);
         return parameters;

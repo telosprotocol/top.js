@@ -85,8 +85,6 @@ class AbstractMethod {
      * @param {IArguments} methodArguments
      */
     setArguments(methodArguments) {
-        console.log('setArguments, method > ', this._methodName);
-
         let parametersArray = cloneDeep([...methodArguments]);
         let callback = null;
 

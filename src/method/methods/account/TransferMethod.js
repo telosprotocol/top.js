@@ -28,8 +28,21 @@ class TransferMethod extends AbstractMethod {
      * @returns {Object}
      */
     getArgs(methodArguments) {
+        let {
+            account
+        } = methodArguments[0] || {};
+        account = account ? account : this.moduleInstance.defaultAccount;
 
-        let { address, sequence_id, token, privateKey, publicKey, last_hash_xxhash64, nonce, } = this.moduleInstance.defaultAccount;
+        let { address, sequence_id, token, privateKeyBytes, publicKey, last_hash_xxhash64, nonce, } = account;
+
+        if (methodArguments.length !== 1) {
+            throw new Error('transfer args length is not right');
+        }
+        const txArgs = methodArguments[0];
+        address = txArgs['from'] || account.address;
+        const targetAddress = txArgs['to'];
+        const txData = txArgs['data'];
+        const amont = txArgs['amont'];
 
         let parameters = {
             version: '1.0',
@@ -38,30 +51,16 @@ class TransferMethod extends AbstractMethod {
             method: 'send_transaction',
             sequence_id
         }
-
         const params = {
             version: '1.0',
             method: true === this.use_transaction ? 'send_transaction' : this._methodName,
             account_address: address,
             sequence_id,
-            // 'rpc_signature::secretkey_key_': '',
-            // 'rpc_signature::method_key_': '',
-            // 'rpc_signature::version_key_': '',
         }
-
-        if (methodArguments.length !== 1) {
-            throw new Error('transfer args length is not right');
-        }
-        const txArgs = methodArguments[0];
-        address = txArgs['from'] || address;
-        const targetAddress = txArgs['to'];
-        const txData = txArgs['data'];
-        const amont = txArgs['amont'];
         const txActionParam = actionParam.ActionAssetOutParam('', amont, txData);
         
         const transAction = new XTransaction();
         transAction.set_transaction_type(xTransactionType.Transfer);
-        // TODO: user nonce
         transAction.set_last_trans_nonce(nonce);
         const cur_timestamp = Math.round(new Date() / 1000);
         transAction.set_fire_timestamp(cur_timestamp);
@@ -85,7 +84,7 @@ class TransferMethod extends AbstractMethod {
         transAction.set_digest();
         const hash =  transAction.get_transaction_hash();
         const hash_buffer = Buffer.from(hash.array);
-        const private_key_buffer = Buffer.from(privateKey);
+        const private_key_buffer = Buffer.from(privateKeyBytes);
         const secp256k1_sign = secp256k1.sign(hash_buffer, private_key_buffer);
         let stream = new ByteBuffer().littleEndian();
         stream.byte(secp256k1_sign.recovery).byteArray(secp256k1_sign.signature,secp256k1_sign.signature.length);

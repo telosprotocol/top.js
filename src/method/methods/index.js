@@ -9,3 +9,7 @@ exports.accountTransaction = require('./account/AccountTransactionMethod');
 // transaction
 exports.requestToken = require('./account/RequestTokenMethod');
 exports.transfer = require('./account/TransferMethod');
+
+// contract
+exports.publishContract = require('./account/PublishContractMethod');
+exports.getProperty = require('./account/GetPropertyMethod');

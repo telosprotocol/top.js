@@ -14,21 +14,22 @@ class Accounts{
      * @returns {Account}
      */
     generate() {
-        let privateKey = '';
+        let privateKeyBytes = '';
         do {
-            privateKey = randombytes(32);
-        } while (!secp256k1.privateKeyVerify(privateKey));
+            privateKeyBytes = randombytes(32);
+        } while (!secp256k1.privateKeyVerify(privateKeyBytes));
 
-        const publicKey = secp256k1.publicKeyCreate(privateKey);
+        const publicKeyBytes = secp256k1.publicKeyCreate(privateKeyBytes, false);
 
-        const hash =  utxoLib.crypto.sha256(publicKey);
+        const hash =  utxoLib.crypto.sha256(publicKeyBytes);
         const ripemd = utxoLib.crypto.ripemd160(hash);
         const address = utxoLib.address.toBase58Check(ripemd,0);
 
         return new Account({
             address: "T-0-" + address, 
-            privateKey,
-            publicKey
+            privateKey: StringUtil.bytes2hex(privateKeyBytes),
+            publicKey: StringUtil.bytes2hex(privateKeyBytes),
+            privateKeyBytes
         });
     }
 
@@ -50,19 +51,20 @@ class Accounts{
             throw new Error("Private key must be 32 bytes long");
         }
 
-        privateKey = Buffer.from(StringUtil.hex2bytes(privateKey))
-        let publicKey = secp256k1.publicKeyCreate(privateKey, false);
+        const privateKeyBytes = Buffer.from(StringUtil.hex2bytes(privateKey))
+        let publicKeyBytes = secp256k1.publicKeyCreate(privateKeyBytes, false);
 
-        const hash =  utxoLib.crypto.sha256(publicKey);
+        const hash =  utxoLib.crypto.sha256(publicKeyBytes);
         const ripemd = utxoLib.crypto.ripemd160(hash);
         const address = utxoLib.address.toBase58Check(ripemd,0);
 
-        publicKey = secp256k1.publicKeyCreate(privateKey);
+        // publicKey = secp256k1.publicKeyCreate(privateKey);
 
         return new Account({
             address: "T-0-" + address, 
             privateKey,
-            publicKey
+            publicKey: StringUtil.bytes2hex(publicKeyBytes),
+            privateKeyBytes
         });
     }
 }

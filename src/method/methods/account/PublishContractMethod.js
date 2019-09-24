@@ -7,8 +7,9 @@ const XAction = require('../../lib/XAction');
 const ByteBuffer = require('../../../utils/ByteBuffer');
 const secp256k1 = require('secp256k1');
 const StringUtil = require("../../../utils");
+const accounts = require("../../../accounts");
 
-class CreateAccountMethod extends AbstractMethod {
+class PublishContractMethod extends AbstractMethod {
 
     constructor(moduleInstance) {
         super({
@@ -28,11 +29,11 @@ class CreateAccountMethod extends AbstractMethod {
      */
     getArgs(methodArguments) {
         let {
-            account
+            account,
+            txHash
         } = methodArguments[0] || {};
         account = account ? account : this.moduleInstance.defaultAccount;
-        
-        let { address, sequence_id, token, privateKeyBytes, publicKey } = account;
+        let { address, sequence_id, token, privateKeyBytes, publicKey, last_hash_xxhash64, nonce, } = account;
 
         let parameters = {
             version: '1.0',
@@ -48,28 +49,44 @@ class CreateAccountMethod extends AbstractMethod {
             account_address: address,
             sequence_id,
         }
+
+        if (methodArguments.length !== 1) {
+            throw new Error('publish contract args length is not right');
+        }
+        const txArgs = methodArguments[0];
+        const contractAccount = txArgs['contractAccount'];
+        const contractCode = txArgs['contractCode'];
+        const deposit = txArgs['deposit'];
+        const gasLimit = txArgs['gasLimit'] || 0;
+        const type = txArgs['type'] || '';
+        const note = txArgs['note'] || '';
+
+        if (!contractAccount) {
+            throw new Error('need contractAccount');
+        }
         
         const transAction = new XTransaction();
-        transAction.set_transaction_type(xTransactionType.CreateUserAccount);
-        // TODO: user nonce
-        transAction.set_last_trans_nonce(0);
+        transAction.set_transaction_type(xTransactionType.CreateContractAccount);
+        transAction.set_last_trans_nonce(nonce);
         const cur_timestamp = Math.round(new Date() / 1000);
         transAction.set_fire_timestamp(cur_timestamp);
         transAction.set_expire_duration(100);
-        transAction.set_last_trans_hash("0xF6E9BE5D70632CF5");
+        transAction.set_last_trans_hash(last_hash_xxhash64);
         transAction.set_deposit(100000);
 
         const sourceAction = new XAction();
-        sourceAction.set_action_type(xActionType.SourceNull);
+        sourceAction.set_action_type(xActionType.CreateConstractAccount);
         sourceAction.set_account_addr(address);
-        sourceAction.set_action_param(new Uint8Array(0));
+        let sb =new ByteBuffer().littleEndian();
+        let _s_params = sb.string(type).int64(deposit).string(note).pack();
+        sourceAction.set_action_param(_s_params);
 
         const targetAction = new XAction();
-        targetAction.set_action_type(xActionType.CreateUserAccount);
-        targetAction.set_account_addr(address);
-        let sb =new ByteBuffer().littleEndian();
-        let _a_params = sb.string(address).pack();
-        targetAction.set_action_param(_a_params);
+        targetAction.set_action_type(xActionType.CreateConstractAccount);
+        targetAction.set_account_addr(contractAccount.address);
+        let tb =new ByteBuffer().littleEndian();
+        let _t_params = tb.int32(gasLimit).string(contractCode).pack();
+        targetAction.set_action_param(_t_params);
         
         transAction.set_source_action(sourceAction);
         transAction.set_target_action(targetAction);
@@ -84,8 +101,8 @@ class CreateAccountMethod extends AbstractMethod {
         const stream_array =  new Uint8Array(stream.pack());
         const auth_hex = "0x" + StringUtil.bytes2hex(stream_array);
         
-        sourceAction.set_action_param("0x" + StringUtil.bytes2hex(new Uint8Array(0)));
-        targetAction.set_action_param("0x" + StringUtil.bytes2hex(_a_params));
+        sourceAction.set_action_param("0x" + StringUtil.bytes2hex(_s_params));
+        targetAction.set_action_param("0x" + StringUtil.bytes2hex(_t_params));
 
         transAction.set_authorization(auth_hex);
         transAction.set_transaction_hash(hash.hex);
@@ -97,4 +114,4 @@ class CreateAccountMethod extends AbstractMethod {
     }
 }
 
-module.exports = CreateAccountMethod;
+module.exports = PublishContractMethod;
