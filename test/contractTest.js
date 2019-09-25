@@ -3,7 +3,8 @@ const fs = require("fs");
 
 module.exports = async () => {
     const topjs = new TopJs();
-    const url = await topjs.getDefaultServerUrl();
+    // const url = await topjs.getDefaultServerUrl();
+    url = 'http://192.168.50.171:19081';
     topjs.setProvider(url);
     let pAccount = topjs.accounts.generate();
     let cAccount = topjs.accounts.generate();
@@ -27,7 +28,7 @@ module.exports = async () => {
             account: pAccount,
             contractAccount: cAccount,
             contractCode: data.toString(),
-            deposit: 200
+            deposit: 200,
         });
         // console.log('publishContractResult >>> ', JSON.stringify(publishContractResult));
         setTimeout(async() => {
@@ -51,6 +52,13 @@ module.exports = async () => {
 
         
         setTimeout(async() => {
+            const accountInfo = await topjs.accountInfo({
+                account: pAccount
+            });
+            if (accountInfo.data) {
+                pAccount.nonce = accountInfo.data.nonce;
+                pAccount.last_hash_xxhash64 = accountInfo.data.last_hash_xxhash64;
+            }
             const result = await topjs.callContract({
                 account: pAccount,
                 contractAddress: cAccount.address,
@@ -59,7 +67,7 @@ module.exports = async () => {
                     type: 'string',
                     value: 'inkey'
                 }, {
-                    type: 'int',
+                    type: 'number',
                     value: 65
                 }]
             });

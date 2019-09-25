@@ -16,39 +16,27 @@ class ActionParam{
      */
     static genCallContractParam(actionParam){
         const XActionParamType = {
-            short : '%c',
-        
-            // uint32_t
-            int : '%d',
-        
-            // uint64_t
-            long: '%ld',
-        
+            number: '%ld',
             string: '%s',
+            bool: '%c',
         };
-        let paramPre = '';
         if (!actionParam || !Array.isArray(actionParam) || actionParam.length <= 0){
             return [];
         }
-        for(var i=0;i<actionParam.length;i++){
-            let temp = actionParam[i];
-            if (temp && XActionParamType[temp.type] && temp.value) {
-                paramPre += XActionParamType[temp.type];
-            }
-        }
         let stream = new ByteBuffer().littleEndian();
-        stream.string(paramPre);
+        stream.byte(actionParam.length);
         for(var i=0;i<actionParam.length;i++){
             let temp = actionParam[i];
-            if (temp && XActionParamType[temp.type] && temp.value) {
-                if (temp.type == 'short') {
-                    stream.ushort(temp.value);
-                } else if (temp.type == 'int') {
-                    stream.uint32(temp.value);
-                } else if (temp.type == 'long') {
+            if (temp && XActionParamType[temp.type]) {
+                if (temp.type == 'number') {
+                    stream.byte(1);
                     stream.int64(temp.value);
                 } else if (temp.type == 'string') {
+                    stream.byte(2);
                     stream.string(temp.value);
+                } else if (temp.type == 'bool') {
+                    stream.byte(2);
+                    stream.byte(temp.value);
                 } else {
                     throw new Error('do not support type');
                 }
