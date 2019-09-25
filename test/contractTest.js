@@ -15,6 +15,10 @@ module.exports = async (urlStr) => {
         const accountInfo = await topjs.accountInfo({
             account: pAccount
         });
+        if (accountInfo.data) {
+            pAccount.nonce = accountInfo.data.nonce;
+            pAccount.last_hash_xxhash64 = accountInfo.data.last_hash_xxhash64;
+        }
         console.log('accountInfo >>> ', accountInfo);
         var data = fs.readFileSync('D:/project/gerrit/js-sdk/test/map.lua');
         const publishContractResult = await topjs.publishContract({
