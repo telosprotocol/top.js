@@ -42,7 +42,7 @@ class TransferMethod extends AbstractMethod {
         address = txArgs['from'] || account.address;
         const targetAddress = txArgs['to'];
         const txData = txArgs['data'];
-        const amont = txArgs['amont'];
+        const amount = txArgs['amount'];
 
         let parameters = {
             version: '1.0',

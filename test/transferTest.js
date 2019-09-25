@@ -12,7 +12,7 @@ module.exports = async (urlStr) => {
         
         const transferResult = await topjs.transfer({
             to: 'T-0-1EHzT2ejd12uJx7BkDgkA7B5DS1nM6AXyF',
-            amont: 110,
+            amount: 110,
             data: 'hello top hahah hahah'
         });
         console.log('transferResult >>> ', transferResult);
