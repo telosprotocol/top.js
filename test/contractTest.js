@@ -1,8 +1,10 @@
 const TopJs = require('../src');
 const fs = require("fs");
 
-module.exports = async (urlStr) => {
-    const topjs = new TopJs(urlStr);
+module.exports = async () => {
+    const topjs = new TopJs();
+    const url = await topjs.getDefaultServerUrl();
+    topjs.setProvider(url);
     let pAccount = topjs.accounts.generate();
     let cAccount = topjs.accounts.generate();
     console.log('contractAccount >>> address >', cAccount.address);

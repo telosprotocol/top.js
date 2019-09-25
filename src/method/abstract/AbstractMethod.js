@@ -44,6 +44,9 @@ class AbstractMethod {
     async execute() {
         this.beforeExecution(this.moduleInstance);
         try {
+            if (!this.moduleInstance.currentProvider) {
+                throw new Error('provider is null');
+            }
             let response = await this.moduleInstance.currentProvider.send(this._methodName, this._arguments.parameters);
             if (response) {
                 response = this.afterExecution(response);

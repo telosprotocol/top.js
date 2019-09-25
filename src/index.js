@@ -4,11 +4,14 @@ const MethodFactory = require('./method/MethodFactory');
 const MethodProxy = require('./method/MethodProxy');
 const Accounts = require('./accounts');
 const version = require('../package.json');
+const axios = require('axios');
 
 class TopJs{
     constructor(provider, options = {}) {
         this.pmf = new ProvidersModuleFactory();
-        this._currentProvider = this.pmf.resolve(provider, options);
+        if (provider) {
+            this._currentProvider = this.pmf.resolve(provider, options);
+        }
 
         this.accounts = new Accounts();
         this.defaultAccount = this.accounts.generate();
@@ -46,6 +49,28 @@ class TopJs{
     setProvider(provider, options) {
         const resolvedProvider = this.pmf.resolve(provider, options);
         this._currentProvider = resolvedProvider;
+    }
+
+    async getDefaultServerUrl(portType) {
+        portType = portType ? portType : 'http';
+        // default http provider url
+        const response = await axios.get('http://localhost/serverInfo.json');
+        if (response.status !== 200) {
+            return null;
+        }
+        const serverObj = response.data;
+        if (!serverObj || !serverObj.address || !serverObj.address.edge || !serverObj.port || !serverObj.port.edge){
+            return null;
+        }
+        let edgeAddressArray = serverObj.address.edge;
+        let edgePort = serverObj.port.edge;
+        if (edgeAddressArray.length <= 0 || !edgePort[portType]) {
+            return null;
+        }
+        let index = Math.floor(Math.random() * edgeAddressArray.length);
+        let host = edgeAddressArray[index];
+        let port = edgePort[portType];
+        return portType + '://' + host + ':' + port;
     }
 }
 
