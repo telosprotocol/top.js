@@ -46,19 +46,6 @@ class GetPropertyMethod extends AbstractMethod {
         parameters.body = JSON.stringify(params);
         return parameters;
     }
-
-    /**
-     * This method will be executed after the RPC request.
-     *
-     * @method afterExecution
-     *
-     * @param {*} response
-     *
-     * @returns {*}
-     */
-    afterExecution(response) {
-
-    }
 }
 
 module.exports = GetPropertyMethod;

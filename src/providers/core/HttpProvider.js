@@ -78,7 +78,7 @@ class HttpProvider {
             if (response.status !== 200) {
                 throw new Error('request failed, status ' + response.status);
             }
-            console.log('http provider get response > ', JSON.stringify(response.data));
+            // console.log('http provider get response > ', JSON.stringify(response.data));
             return response.data;
         } catch (error) {
             console.error('http provider error > ', error);
