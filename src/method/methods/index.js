@@ -13,3 +13,4 @@ exports.transfer = require('./account/TransferMethod');
 // contract
 exports.publishContract = require('./account/PublishContractMethod');
 exports.getProperty = require('./account/GetPropertyMethod');
+exports.callContract = require('./account/CallContractMethod');

@@ -54,7 +54,7 @@ class TopJs{
     async getDefaultServerUrl(portType) {
         portType = portType ? portType : 'http';
         // default http provider url
-        const response = await axios.get('http://localhost/serverInfo.json');
+        const response = await axios.get('http://hackserver.topnetwork.org/');
         if (response.status !== 200) {
             return null;
         }
