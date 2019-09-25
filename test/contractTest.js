@@ -3,16 +3,22 @@ const fs = require("fs");
 
 module.exports = async (urlStr) => {
     const topjs = new TopJs(urlStr);
+    let pAccount = topjs.accounts.generate();
     let cAccount = topjs.accounts.generate();
     console.log('contractAccount >>> address >', cAccount.address);
     await topjs.requestToken();
-    const createAccountResult = await topjs.createAccount();
+    const createAccountResult = await topjs.createAccount({
+        account: pAccount
+    });
     console.log('createAccountResult >>>>> ', createAccountResult);
     setTimeout(async()=>{
-        const accountInfo = await topjs.accountInfo();
+        const accountInfo = await topjs.accountInfo({
+            account: pAccount
+        });
         console.log('accountInfo >>> ', accountInfo);
         var data = fs.readFileSync('D:/project/gerrit/js-sdk/test/map.lua');
         const publishContractResult = await topjs.publishContract({
+            account: pAccount,
             contractAccount: cAccount,
             contractCode: data.toString(),
             deposit: 200
@@ -35,7 +41,7 @@ module.exports = async (urlStr) => {
                 data: 'temp_1'
             });
             console.log('getProperty Result >>> ', accountInfoResult);
-        }, 1000)
+        }, 3000)
     }, 1000)
 };
 

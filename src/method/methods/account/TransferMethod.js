@@ -57,7 +57,7 @@ class TransferMethod extends AbstractMethod {
             account_address: address,
             sequence_id,
         }
-        const txActionParam = actionParam.ActionAssetOutParam('', amont, txData);
+        const txActionParam = actionParam.ActionAssetOutParam('', amount, txData);
         
         const transAction = new XTransaction();
         transAction.set_transaction_type(xTransactionType.Transfer);

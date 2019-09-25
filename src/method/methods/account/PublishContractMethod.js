@@ -62,7 +62,7 @@ class PublishContractMethod extends AbstractMethod {
         const note = txArgs['note'] || '';
 
         if (!contractAccount) {
-            throw new Error('need contractAccount');
+            contractAccount = accounts.generate();
         }
         
         const transAction = new XTransaction();
