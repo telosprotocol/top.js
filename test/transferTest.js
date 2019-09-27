@@ -25,6 +25,7 @@ module.exports = async (urlStr) => {
             const d = await topjs.accountTransaction();
             const actionParamObj = topjs.utils.decodeActionParam(d.data.target_action.action_param);
             console.log('userInfo >>>>> ', d);
+            console.log('userInfo >>>>> ', actionParamObj);
         }, 3000);
         
     }, 3000);
