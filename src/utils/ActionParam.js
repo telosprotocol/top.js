@@ -35,7 +35,7 @@ class ActionParam{
                     stream.byte(2);
                     stream.string(temp.value);
                 } else if (temp.type == 'bool') {
-                    stream.byte(2);
+                    stream.byte(3);
                     stream.byte(temp.value);
                 } else {
                     throw new Error('do not support type');

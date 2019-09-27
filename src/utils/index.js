@@ -15,6 +15,9 @@ class Utils {
 
     static little_endian(str) {
         if (str !== '' && str !== undefined) {
+            if (str.length % 2 === 1){
+                str = '0' + str;
+            }
             let new_str = '';
             for (let x = str.length; x >= 0; x = x - 2) {
                 new_str += str.charAt(x)
