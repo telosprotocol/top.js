@@ -3,8 +3,8 @@ const fs = require("fs");
 
 module.exports = async () => {
     const topjs = new TopJs();
-    // const url = await topjs.getDefaultServerUrl();
-    url = 'http://192.168.50.171:19081';
+    const url = await topjs.getDefaultServerUrl('http://hacker.topnetwork.org/');
+    // url = 'http://192.168.50.171:19081';
     topjs.setProvider(url);
     let pAccount = topjs.accounts.generate();
     let cAccount = topjs.accounts.generate();
