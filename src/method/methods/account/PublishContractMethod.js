@@ -31,7 +31,6 @@ class PublishContractMethod extends AbstractMethod {
     getArgs(methodArguments) {
         let {
             account,
-            txHash
         } = methodArguments[0] || {};
         account = account ? account : this.moduleInstance.defaultAccount;
         let { address, sequence_id, token, privateKeyBytes, publicKey, last_hash_xxhash64, nonce, } = account;
@@ -55,16 +54,12 @@ class PublishContractMethod extends AbstractMethod {
             throw new Error('publish contract args length is not right');
         }
         const txArgs = methodArguments[0];
-        const contractAccount = txArgs['contractAccount'];
+        const contractAccount = txArgs['contractAccount'] || accounts.generate();
         const contractCode = txArgs['contractCode'];
         const deposit = txArgs['deposit'];
         const gasLimit = txArgs['gasLimit'] || 0;
         const type = txArgs['type'] || '';
         const note = txArgs['note'] || '';
-
-        if (!contractAccount) {
-            contractAccount = accounts.generate();
-        }
         
         const transAction = new XTransaction();
         transAction.set_transaction_type(xTransactionType.CreateContractAccount);

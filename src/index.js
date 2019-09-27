@@ -51,10 +51,11 @@ class TopJs{
         this._currentProvider = resolvedProvider;
     }
 
-    async getDefaultServerUrl(portType) {
+    async getDefaultServerUrl(dnsurl, portType) {
         portType = portType ? portType : 'http';
+        dnsurl = dnsurl || 'http://testnet.topnetwork.org/'
         // default http provider url
-        const response = await axios.get('http://hackserver.topnetwork.org/');
+        const response = await axios.get(dnsurl);
         if (response.status !== 200) {
             return null;
         }
