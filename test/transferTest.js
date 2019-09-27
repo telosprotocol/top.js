@@ -1,7 +1,9 @@
 const TopJs = require('../src');
 
 module.exports = async (urlStr) => {
-    const topjs = new TopJs(urlStr);
+    const topjs = new TopJs();
+    const url = await topjs.getDefaultServerUrl('http://hacker.topnetwork.org/');
+    topjs.setProvider(url);
     await topjs.requestToken();
     const createAccountResult = await topjs.createAccount();
     console.log('createAccountResult >>>>> ', createAccountResult);
@@ -21,9 +23,10 @@ module.exports = async (urlStr) => {
             const s = await topjs.accountInfo();
             console.log('userInfo >>>>> ', s);
             const d = await topjs.accountTransaction();
+            const actionParamObj = topjs.utils.decodeActionParam(d.data.target_action.action_param);
             console.log('userInfo >>>>> ', d);
-        }, 1000);
+        }, 3000);
         
-    }, 1000);
+    }, 3000);
 };
 

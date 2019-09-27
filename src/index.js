@@ -5,6 +5,7 @@ const MethodProxy = require('./method/MethodProxy');
 const Accounts = require('./accounts');
 const version = require('../package.json');
 const axios = require('axios');
+const utils = require('./utils');
 
 class TopJs{
     constructor(provider, options = {}) {
@@ -17,6 +18,7 @@ class TopJs{
         this.defaultAccount = this.accounts.generate();
         
         this.version = version;
+        this.utils = utils;
         return new MethodProxy(this, new MethodFactory());
     }
 

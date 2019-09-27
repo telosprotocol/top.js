@@ -1,6 +1,7 @@
 'use strict';
 
 const ByteBuffer = require('./ByteBuffer');
+const convert = require('./Convert');
 
 class ActionParam{
 
@@ -9,6 +10,42 @@ class ActionParam{
         stream.string(token_name).int64(amount).string(memo);
         return stream.pack();
     };
+
+    static decodeStringActionParam(strBytes, startIndex){
+        if (!strBytes || strBytes.length == 0){
+            return null;
+        }
+        let coinTypeLengthBytes = strBytes.slice(startIndex, startIndex + 4);
+        let coinTypeLength = this.bytes2Number(coinTypeLengthBytes, true);
+        if (coinTypeLength == 0){
+            return {
+                str: "",
+                index: startIndex + 4
+            };
+        }
+        startIndex = startIndex + 4;
+        let coinTypeBytes = strBytes.slice(startIndex, startIndex + coinTypeLength);
+        let coinTypeStr = Buffer.from(coinTypeBytes).toString('utf8', 0, coinTypeLength);
+        return {
+            str: coinTypeStr,
+            index: startIndex + coinTypeLength
+        };
+    }
+
+    static decodeActionParam(hexStr){
+        if (!hexStr || hexStr.length <= 2) {
+            return null;
+        }
+        hexStr = hexStr.replace('0x', '');
+        const actionParamBytes = convert.hex2bytes(hexStr);
+        let coinTypeResult = this.decodeStringActionParam(actionParamBytes, 0);
+        let amountBytes = actionParamBytes.slice(coinTypeResult.index, coinTypeResult.index + 8);
+        let amount = this.bytes2Number(amountBytes, true);
+        let { str } = this.decodeStringActionParam(actionParamBytes, coinTypeResult.index + 8);
+        return{
+            coinType: coinTypeResult.str, amount, note: str
+        }
+    }
 
     /**
      * 
