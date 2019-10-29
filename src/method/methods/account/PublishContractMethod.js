@@ -5,9 +5,8 @@ const xTransactionType = require('../../model/XTransactionType');
 const XTransaction = require('../../lib/XTransaction');
 const XAction = require('../../lib/XAction');
 const ByteBuffer = require('../../../utils/ByteBuffer');
-const secp256k1 = require('secp256k1');
+const Secp256k1Helper = require('../../../utils/Secp256k1Helper');
 const StringUtil = require("../../../utils");
-const accounts = require("../../../accounts");
 
 class PublishContractMethod extends AbstractMethod {
 
@@ -54,7 +53,7 @@ class PublishContractMethod extends AbstractMethod {
             throw new Error('publish contract args length is not right');
         }
         const txArgs = methodArguments[0];
-        const contractAccount = txArgs['contractAccount'] || accounts.generate();
+        const contractAccount = txArgs['contractAccount'] || this.moduleInstance.accounts.generateContractAccount({ parentAddress: address });
         const contractCode = txArgs['contractCode'];
         const deposit = txArgs['deposit'];
         const gasLimit = txArgs['gasLimit'] || 0;
@@ -81,21 +80,19 @@ class PublishContractMethod extends AbstractMethod {
         targetAction.set_action_type(xActionType.CreateConstractAccount);
         targetAction.set_account_addr(contractAccount.address);
         let tb =new ByteBuffer().littleEndian();
-        let _t_params = tb.int32(gasLimit).string(contractCode).pack();
+        let _t_params = tb.int64(gasLimit).string(contractCode).pack();
         targetAction.set_action_param(_t_params);
+
+        const targetHashResult = targetAction.set_digest();
+        const target_action_auth_hex = Secp256k1Helper.signData(contractAccount.privateKeyBytes, targetHashResult.array);
+        targetAction.set_action_authorization(target_action_auth_hex);
         
         transAction.set_source_action(sourceAction);
         transAction.set_target_action(targetAction);
 
         transAction.set_digest();
         const hash =  transAction.get_transaction_hash();
-        const hash_buffer = Buffer.from(hash.array);
-        const private_key_buffer = Buffer.from(privateKeyBytes);
-        const secp256k1_sign = secp256k1.sign(hash_buffer, private_key_buffer);
-        let stream = new ByteBuffer().littleEndian();
-        stream.byte(secp256k1_sign.recovery).byteArray(secp256k1_sign.signature,secp256k1_sign.signature.length);
-        const stream_array =  new Uint8Array(stream.pack());
-        const auth_hex = "0x" + StringUtil.bytes2hex(stream_array);
+        const auth_hex = Secp256k1Helper.signData(privateKeyBytes, hash.array);
         
         sourceAction.set_action_param("0x" + StringUtil.bytes2hex(_s_params));
         targetAction.set_action_param("0x" + StringUtil.bytes2hex(_t_params));
@@ -105,8 +102,9 @@ class PublishContractMethod extends AbstractMethod {
         transAction.set_public_key("0x" + StringUtil.bytes2hex(publicKey));
 
         params.params = transAction;
-        this.transAction = transAction;
         parameters.body = JSON.stringify(params);
+        transAction.contractAccount = contractAccount;
+        this.transAction = transAction;
         return parameters;
     }
 

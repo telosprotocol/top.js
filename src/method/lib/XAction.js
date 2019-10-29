@@ -1,6 +1,7 @@
 'use strict';
 
 const ByteBuffer = require("../../utils/ByteBuffer");
+const StringUtil = require("../../utils");
 const {sha256} = require('js-sha256');
 
 class XAction {
@@ -22,12 +23,16 @@ class XAction {
             .string(this.account_addr)
             .string(this.action_name);
         if(0 === this.action_param.length) {
-            stream.string("")
-                .string(this.action_authorization);
+            stream.string("");
         } else {
             stream.uint32(this.action_param.length)
-                .byteArray(this.action_param,this.action_param.length)
-                .string(this.action_authorization);
+                .byteArray(this.action_param,this.action_param.length);
+        }
+        if (!this.action_authorization) {
+            stream.string(this.action_authorization);
+        } else {
+            const authBytes = StringUtil.hex2bytes(this.action_authorization.replace("0x",""));
+            stream.uint32(authBytes.length).byteArray(authBytes, authBytes.length);
         }
 
         const end_pos = new Uint8Array(stream.pack()).length;
@@ -36,7 +41,13 @@ class XAction {
 
     set_digest() {
         let stream = new ByteBuffer().littleEndian();
-        this.serialize_write(stream);
+        stream.uint32(this.action_hash)
+            .ushort(this.action_type)
+            .ushort(this.action_size)
+            .string(this.account_addr)
+            .string(this.action_name)
+            .uint32(this.action_param.length)
+            .byteArray(this.action_param,this.action_param.length)
         let hash = sha256.create();
         hash.update(stream.pack());
         const hash_array = hash.array();

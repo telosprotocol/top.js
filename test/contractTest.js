@@ -5,12 +5,10 @@ module.exports = async () => {
     const topjs = new TopJs();
     const url = await topjs.getDefaultServerUrl('http://hacker.topnetwork.org/');
     // url = 'http://192.168.50.171:19081';
-    topjs.setProvider(url);
-    let pAccount = topjs.accounts.generate();
-    let cAccount = topjs.accounts.generate();
-    console.log('contractAccount >>> address >', cAccount.address);
+    topjs.setProvider('http://192.168.50.202:19081');
+    let pAccount = topjs.accounts.generate({ privateKey: '0x750918274d3d07a28ebc825540095bb8e2404b66b06ed7ef283c8f7fcd172e35' });
     await topjs.requestToken();
-    const createAccountResult = await topjs.createAccount({
+    await topjs.createAccount({
         account: pAccount
     });
     // console.log('createAccountResult >>>>> ', JSON.stringify(createAccountResult));
@@ -26,24 +24,29 @@ module.exports = async () => {
         var data = fs.readFileSync('D:/project/gerrit/js-sdk/test/map.lua');
         const publishContractResult = await topjs.publishContract({
             account: pAccount,
-            contractAccount: cAccount,
+            // contractAccount: cAccount,
             contractCode: data.toString(),
             deposit: 200,
+            note: 'test_tx'
         });
-        // console.log('publishContractResult >>> ', JSON.stringify(publishContractResult));
+        console.log('publishContractResult >>> ', JSON.stringify(publishContractResult));
+        if (publishContractResult.errno != 0) {
+            return;
+        }
+        const contract_address = publishContractResult.data.contractAccount.address;
         setTimeout(async() => {
-            const contractAccountInfo = await topjs.accountInfo({
-                account: cAccount
-            });
+            // const contractAccountInfo = await topjs.accountInfo({
+            //     account: cAccount
+            // });
             // console.log('contractAccountInfo >>> ', JSON.stringify(contractAccountInfo));
             const result = await topjs.getProperty({
-                contractAddress: cAccount.address,
+                contractAddress: contract_address,
                 type: 'map',
                 data: ['hmap', 'key']
             });
             console.log('getProperty Result >>> ', JSON.stringify(result));
             const accountInfoResult = await topjs.getProperty({
-                contractAddress: cAccount.address,
+                contractAddress: contract_address,
                 type: 'string',
                 data: 'temp_1'
             });
@@ -61,7 +64,7 @@ module.exports = async () => {
             }
             const result = await topjs.callContract({
                 account: pAccount,
-                contractAddress: cAccount.address,
+                contractAddress: contract_address,
                 actionName: 'opt_map',
                 actionParam: [{
                     type: 'string',
@@ -75,14 +78,14 @@ module.exports = async () => {
             
             setTimeout(async ()=> {
                 const accountInfoResult = await topjs.getProperty({
-                    contractAddress: cAccount.address,
+                    contractAddress: contract_address,
                     type: 'map',
                     data: ['hmap', 'inkey']
                 });
                 console.log('getProperty Result >>> ', JSON.stringify(accountInfoResult));
                 
                 const result = await topjs.getProperty({
-                    contractAddress: cAccount.address,
+                    contractAddress: contract_address,
                     type: 'map',
                     data: ['hmap', 'key']
                 });
