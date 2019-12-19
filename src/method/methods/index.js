@@ -14,3 +14,13 @@ exports.transfer = require('./account/TransferMethod');
 exports.publishContract = require('./account/PublishContractMethod');
 exports.getProperty = require('./account/GetPropertyMethod');
 exports.callContract = require('./account/CallContractMethod');
+
+// pledge nad redeem
+exports.pledgeDisk = require('./account/PledgeDiskMethod');
+exports.pledgeTgas = require('./account/PledgeTGasMethod');
+exports.redeemDisk = require('./account/RedeemDiskMethod');
+exports.redeemTgas = require('./account/RedeemTgasMethod');
+
+// node register and deRegister
+exports.nodeRegister = require('./account/NodeRegisterMethod');
+exports.nodeDeRegister = require('./account/NodeDeRegisterMethod');

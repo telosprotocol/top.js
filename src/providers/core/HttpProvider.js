@@ -81,7 +81,7 @@ class HttpProvider {
             // console.log('http provider get response > ', JSON.stringify(response.data));
             return response.data;
         } catch (error) {
-            console.error('http provider error > ', error);
+            throw new Error(error);
         }
     }
 }

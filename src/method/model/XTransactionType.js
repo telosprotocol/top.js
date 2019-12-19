@@ -14,5 +14,10 @@ module.exports = {
     LockToken: 12,
     UnlockToken : 13,
     GetConsensusRandom : 15,
-    CreateChildAccount : 16
+    CreateChildAccount : 16,
+
+    PledgeTokenTgas: 22,
+    RedeemTokenTgas: 23,
+    PledgeTokenDisk: 24,
+    RedeemTokenDisk: 25
 };

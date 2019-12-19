@@ -59,7 +59,7 @@ class AccountTransactionMethod extends AbstractMethod {
      */
     afterExecution(response) {
         if (response.errno !== 0) {
-            throw new Error('request token get error');
+            throw new Error(response.errmsg);
         }
         const ap = response.data.target_action.action_param;
         const ss = StringUtil.hex2bytes(ap.replace('0x', ''));
