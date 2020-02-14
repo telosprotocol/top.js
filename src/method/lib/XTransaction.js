@@ -26,7 +26,9 @@ class XTransactionHeader {
         this.last_trans_nonce  = 0;
         this.last_trans_hash  = "";
         this.parent_account = "";
+        this.confirm_action = "";
         this.authority_keys = "";
+        this.ext = "";
     }
 
     serialize_write(stream) {
@@ -54,7 +56,9 @@ class XTransactionHeader {
             .int64(this.last_trans_nonce)
             .byteArray(last_trans_hash_byte,8)
             .string(this.parent_account)
-            .string(this.authority_keys);
+            .string(this.authority_keys)
+            .string(this.confirm_action)
+            .string(this.ext);
         const end_pos = new Uint8Array(stream.pack()).length;
         return end_pos - begin_pos;
     }
@@ -192,6 +196,13 @@ class XTransaction extends XTransactionHeader {
         this.transaction_hash = undefined;
         this.authorization = "";
         this.public_key = "";
+        this.confirm_unit_height = 0;
+        this.edge_nodeid = "";
+        this.ext = "";
+        this.flag = 0;
+        this.recv_unit_height = 0;
+        this.send_unit_height = 0;
+        this.tx_exec_status = 0;
     }
     serialize_write(stream) {
         const begin_pos = new Uint8Array(stream.pack()).length;
@@ -200,6 +211,10 @@ class XTransaction extends XTransactionHeader {
         this.target_action.serialize_write(stream);
         const end_pos = new Uint8Array(stream.pack()).length;
         return end_pos - begin_pos;
+    }
+
+    isSuccess(){
+        return this.tx_exec_status == 1;
     }
 
     get_source_action() {

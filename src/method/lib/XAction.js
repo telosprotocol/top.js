@@ -12,6 +12,7 @@ class XAction {
         this.account_addr = "";
         this.action_name = "";
         this.action_param = [];
+        this.action_ext = "";
         this.action_authorization = "";
     }
 
@@ -28,6 +29,7 @@ class XAction {
             stream.uint32(this.action_param.length)
                 .byteArray(this.action_param,this.action_param.length);
         }
+        stream.string(this.action_ext);
         if (!this.action_authorization) {
             stream.string(this.action_authorization);
         } else {
@@ -48,6 +50,7 @@ class XAction {
             .string(this.action_name)
             .uint32(this.action_param.length)
             .byteArray(this.action_param,this.action_param.length)
+            .string(this.action_ext);
         let hash = sha256.create();
         hash.update(stream.pack());
         const hash_array = hash.array();
