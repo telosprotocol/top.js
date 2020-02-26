@@ -203,6 +203,8 @@ class XTransaction extends XTransactionHeader {
         this.recv_unit_height = 0;
         this.send_unit_height = 0;
         this.tx_exec_status = 0;
+        this.recv_tx_exec_status = 0;
+        this.exec_status = 0;
     }
     serialize_write(stream) {
         const begin_pos = new Uint8Array(stream.pack()).length;
@@ -214,7 +216,7 @@ class XTransaction extends XTransactionHeader {
     }
 
     isSuccess(){
-        return this.tx_exec_status == 1;
+        return this.execStatus == 1;
     }
 
     get_source_action() {

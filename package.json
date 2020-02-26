@@ -10,16 +10,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "randombytes": "^2.0.1",
     "axios": "^0.19.0",
     "base32": "^0.0.6",
+    "bs58check": "^2.0.0",
+    "create-hash": "^1.1.0",
     "js-sha256": "^0.9.0",
     "lodash": "^4.17.15",
-    "secp256k1": "^3.7.1",
-    "bs58check": "^2.0.0",
+    "randombytes": "^2.0.1",
     "safe-buffer": "^5.0.1",
+    "secp256k1": "^3.7.1",
     "typeforce": "^1.11.3",
-    "create-hash": "^1.1.0"
+    "xxhashjs": "^0.2.2"
   },
   "devDependencies": {
     "fs": "^0.0.1-security"

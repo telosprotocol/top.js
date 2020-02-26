@@ -1,6 +1,7 @@
 'use strict';
 const convert = require('./Convert');
 const actionParam = require('./ActionParam');
+const topUtils = require('./TopUtils');
 
 String.prototype.format = function () {
     let values = arguments;
@@ -21,5 +22,6 @@ module.exports = {
     str2hex: convert.str2hex,
     bytes2str: convert.bytes2str,
     decodeActionParam: actionParam.decodeActionParam,
-    decodeStringActionParam: actionParam.decodeStringActionParam
+    decodeStringActionParam: actionParam.decodeStringActionParam,
+    addressToTableId: topUtils.addressToTableId
 };

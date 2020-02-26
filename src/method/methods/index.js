@@ -24,3 +24,6 @@ exports.redeemTgas = require('./account/RedeemTgasMethod');
 // node register and deRegister
 exports.nodeRegister = require('./account/NodeRegisterMethod');
 exports.nodeDeRegister = require('./account/NodeDeRegisterMethod');
+
+// block
+exports.getBlock = require('./block/GetBlockMethod');
