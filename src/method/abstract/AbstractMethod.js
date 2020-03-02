@@ -10,6 +10,7 @@ class AbstractMethod {
             throw new Error('method name is required !');
         }
         this._methodName = argsObj.methodName;
+        this.methodArguments = [];
         this._use_transaction = argsObj.use_transaction | false;
         this._transationType = argsObj.transationType;
         this._sourceType = argsObj.sourceType;
@@ -88,6 +89,7 @@ class AbstractMethod {
      * @param {IArguments} methodArguments
      */
     setArguments(methodArguments) {
+        this.methodArguments = methodArguments;
         let parametersArray = cloneDeep([...methodArguments]);
         let callback = null;
 

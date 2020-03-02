@@ -30,6 +30,16 @@ class MethodFactory {
      */
     createMethod(name, moduleInstance) {
         const method = this.methods[name];
+
+        if (method.Type === 'observed-transaction-method') {
+            // eslint-disable-next-line new-cap
+            const obMethod = new method(
+                moduleInstance
+            );
+            obMethod.setAccountTransactionMethod(new methods.accountTransaction(moduleInstance));
+            return obMethod;
+        }
+
         return new method(moduleInstance);
     }
 }

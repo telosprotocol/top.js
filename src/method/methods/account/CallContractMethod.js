@@ -1,5 +1,4 @@
-
-const AbstractMethod = require('../../abstract/AbstractMethod');
+const AbstractObservedTransactionMethod = require('../../abstract/AbstractObservedTransactionMethod');
 const xActionType = require('../../model/XActionType');
 const xTransactionType = require('../../model/XTransactionType');
 const actionParamUtils = require('../../../utils/ActionParam');
@@ -10,14 +9,13 @@ const secp256k1 = require('secp256k1');
 const StringUtil = require("../../../utils");
 const accounts = require("../../../accounts");
 
-class CallContractMethod extends AbstractMethod {
+class CallContractMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
             methodName: 'send_transaction',
             use_transaction: true,
         }, moduleInstance);
-        this.transAction = null;
     }
 
     /**
@@ -108,7 +106,6 @@ class CallContractMethod extends AbstractMethod {
         transAction.set_public_key("0x" + StringUtil.bytes2hex(publicKey));
 
         params.params = transAction;
-        this.transAction = transAction;
         parameters.body = JSON.stringify(params);
         return parameters;
     }

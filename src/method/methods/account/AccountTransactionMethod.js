@@ -41,7 +41,7 @@ class AccountTransactionMethod extends AbstractMethod {
             sequence_id,
             params: { 
                 account: address,
-                tx_hash: last_hash
+                tx_hash: txHash
             }
         }
         parameters.body = JSON.stringify(params);
@@ -58,13 +58,12 @@ class AccountTransactionMethod extends AbstractMethod {
      * @returns {*}
      */
     afterExecution(response) {
-        if (response.errno !== 0) {
-            throw new Error(response.errmsg);
-        }
-        const ap = response.data.target_action.action_param;
-        const ss = StringUtil.hex2bytes(ap.replace('0x', ''));
-        const r = Buffer.from(ss).toString('utf8', 16, ss.length)
-        console.log(r);
+        // if (response.errno == 0) {
+            // const ap = response.data.target_action.action_param;
+            // const ss = StringUtil.hex2bytes(ap.replace('0x', ''));
+            // const r = Buffer.from(ss).toString('utf8', 16, ss.length)
+            // console.log(r);
+        // }
         return response;
     }
 }

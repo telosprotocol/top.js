@@ -1,5 +1,4 @@
-
-const AbstractMethod = require('../../abstract/AbstractMethod');
+const AbstractObservedTransactionMethod = require('../../abstract/AbstractObservedTransactionMethod');
 const xActionType = require('../../model/XActionType');
 const xTransactionType = require('../../model/XTransactionType');
 const actionParam = require('../../../utils/ActionParam');
@@ -8,7 +7,7 @@ const argsLib = require('../../lib/ArgsLib');
 const config = require('../../model/Config');
 const ByteBuffer = require('../../../utils/ByteBuffer');
 
-class PledgeTGasMethod extends AbstractMethod {
+class PledgeTGasMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
@@ -64,25 +63,6 @@ class PledgeTGasMethod extends AbstractMethod {
             privateKeyBytes
         });
         return this.parameters;
-    }
-
-    /**
-     * This method will be executed after the RPC request.
-     *
-     * @method afterExecution
-     *
-     * @param {*} response
-     *
-     * @returns {*}
-     */
-    afterExecution(response) {
-        if (response && response.errno == 0) {
-            let body  = this.parameters ? this.parameters.body : null;
-            if (body) {
-                response.data = JSON.parse(body);
-            }
-        }
-        return response;
     }
 }
 

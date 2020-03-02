@@ -241,7 +241,7 @@ var ByteBuffer = function (org_buf,offset) {
     * @param ifHead 是否在前面加上2个字节表示包长
     **/
     this.pack = function(ifHead){
-        _org_buf = new Buffer((ifHead)?_offset+2:_offset);
+        _org_buf = Buffer.alloc((ifHead)?_offset+2:_offset);
         var offset = 0;
         if(ifHead){
             _org_buf['writeUInt16'+_endian+'E'](_offset,offset);

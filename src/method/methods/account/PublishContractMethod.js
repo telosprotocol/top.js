@@ -1,5 +1,4 @@
-
-const AbstractMethod = require('../../abstract/AbstractMethod');
+const AbstractObservedTransactionMethod = require('../../abstract/AbstractObservedTransactionMethod');
 const xActionType = require('../../model/XActionType');
 const xTransactionType = require('../../model/XTransactionType');
 const XTransaction = require('../../lib/XTransaction');
@@ -8,14 +7,13 @@ const ByteBuffer = require('../../../utils/ByteBuffer');
 const Secp256k1Helper = require('../../../utils/Secp256k1Helper');
 const StringUtil = require("../../../utils");
 
-class PublishContractMethod extends AbstractMethod {
+class PublishContractMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
             methodName: 'send_transaction',
             use_transaction: true,
         }, moduleInstance);
-        this.transAction = null;
     }
 
     /**
@@ -104,24 +102,7 @@ class PublishContractMethod extends AbstractMethod {
         params.params = transAction;
         parameters.body = JSON.stringify(params);
         transAction.contractAccount = contractAccount;
-        this.transAction = transAction;
         return parameters;
-    }
-
-    /**
-     * This method will be executed after the RPC request.
-     *
-     * @method afterExecution
-     *
-     * @param {*} response
-     *
-     * @returns {*}
-     */
-    afterExecution(response) {
-        if (response && response.errno == 0) {
-            response.data = this.transAction;
-        }
-        return response;
     }
 }
 
