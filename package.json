@@ -1,13 +1,13 @@
 {
-  "name": "topjs",
+  "name": "top-sdk-js",
   "version": "0.1.2",
-  "description": "",
+  "description": "TOP SDK for JavaScript",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "browser": "browserify .\\browser\\index.js -o .\\browser\\TopJs.js"
   },
-  "author": "",
+  "author": "sawyer.song@topnetwork.org",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.0",
