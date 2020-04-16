@@ -4,6 +4,8 @@ class AbstractObservedTransactionMethod extends AbstractMethod {
     constructor(argsObj = {}, moduleInstance, ) {
         super(argsObj, moduleInstance);
         this.accountTransactionMethod = null;
+        this.pollCount = 200;
+        this.pollDelayTime = 2000;
     }
 
     /**
@@ -76,15 +78,15 @@ class AbstractObservedTransactionMethod extends AbstractMethod {
                         clearInterval(interval);
                         resolve(resultTemp);
                     }
-                    if (count > 200) {
+                    if (count >= this.pollCount) {
                         clearInterval(interval);
-                        resolve(null);
+                        resolve(resultTemp);
                     }
                 } catch (error) {
                     clearInterval(interval);
                     resolve(null);
                 }
-            }, 2000);
+            }, this.pollDelayTime);
             
         });
     }

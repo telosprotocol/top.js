@@ -79,26 +79,28 @@ class Accounts{
         if (!publicKeyBytes) {
             throw new Error('generate address error, publick bytes is null');
         }
+        let newPublicKeyBytes = Buffer.from(publicKeyBytes);
         addressType = addressType === undefined ? addressTypeEnum.main : addressType;
         netType = netType === undefined ? netType.main : netType;
+        
         if (parentAddress){
             let size = Math.min(parentAddress.length, 65);
             for (let i = 0; i < size; i++) {
-                publicKeyBytes[i] += parentAddress[i].charCodeAt(0);
+                newPublicKeyBytes[i] += parentAddress[i].charCodeAt(0);
             }
         }
 
         let size = 33;
-        if (publicKeyBytes[0] == 4) {
+        if (newPublicKeyBytes[0] == 4) {
             size = 65;
-        } else if (publicKeyBytes[0] == 0) {
+        } else if (newPublicKeyBytes[0] == 0) {
             size = 1;
         }
-        publicKeyBytes = publicKeyBytes.slice(0, size);
+        newPublicKeyBytes = newPublicKeyBytes.slice(0, size);
 
         let version = netType === netType.main ? addressType.charCodeAt(0) : addressType.charCodeAt(0) + (netType << 8);
 
-        const hash =  crypto.sha256(publicKeyBytes);
+        const hash =  crypto.sha256(newPublicKeyBytes);
         const ripemd = crypto.ripemd160(hash);
         const address = addressTools.toBase58Check(ripemd,version);
         return address;

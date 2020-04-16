@@ -81,9 +81,9 @@ class PublishContractMethod extends AbstractObservedTransactionMethod {
         let _t_params = tb.int64(gasLimit).string(contractCode).pack();
         targetAction.set_action_param(_t_params);
 
-        const targetHashResult = targetAction.set_digest();
-        const target_action_auth_hex = Secp256k1Helper.signData(contractAccount.privateKeyBytes, targetHashResult.array);
-        targetAction.set_action_authorization(target_action_auth_hex);
+        // const targetHashResult = targetAction.set_digest();
+        // const target_action_auth_hex = Secp256k1Helper.signData(contractAccount.privateKeyBytes, targetHashResult.array);
+        targetAction.set_action_authorization('0x' + contractAccount.publicKey);
         
         transAction.set_source_action(sourceAction);
         transAction.set_target_action(targetAction);
@@ -97,7 +97,7 @@ class PublishContractMethod extends AbstractObservedTransactionMethod {
 
         transAction.set_authorization(auth_hex);
         transAction.set_transaction_hash(hash.hex);
-        transAction.set_public_key("0x" + StringUtil.bytes2hex(publicKey));
+        transAction.set_public_key("0x" + publicKey);
 
         params.params = transAction;
         parameters.body = JSON.stringify(params);

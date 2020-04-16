@@ -2,11 +2,17 @@ const TopJs = require('../src');
 const fs = require("fs");
 
 module.exports = async () => {
-    const topjs = new TopJs();
-    topjs.setProvider('http://192.168.50.136:19081');
-    // let pAccount = topjs.accounts.generate({ privateKey: '0xf157bbac5e40852ec8908f817e55dbfb10c9a281c709ea507d7c328a7a7492c9' });
+    const topjs = new TopJs('http://192.168.50.35:19081', {
+        pollCount:5,
+        pollDelayTime: 3000
+    });
+    const contractAccount = topjs.accounts.generateContractAccount({privateKey: '0xe3555c4e321916a04ea02bc8ba0c13e15da15b32cda2ad1f6414050dcc333639', parentAddress: 'T-0-Lb4Tk23sKM7jkAfKoM7eME16Dy5RLJLPf1'});
+    // topjs.setProvider('http://192.168.50.35:19081');
+    // let pAccount = topjs.accounts.generate({ privateKey: '0x915055d92a6fca8eeae72f0515e3be84d69a5af79aa10f818881f654f755b877' });
     let pAccount = topjs.accounts.generate();
-    await topjs.requestToken();
+    await topjs.requestToken({
+        account: pAccount
+    });
     const createAccountResult = await topjs.createAccount({
         account: pAccount
     });
@@ -18,21 +24,20 @@ module.exports = async () => {
         account: pAccount
     });
     console.log('account balance >>> ', JSON.stringify(accountInfo.data.balance));
+    await topjs.updateNonceAndLastHash(pAccount);
     var data = fs.readFileSync('D:/project/gerrit/js-sdk/test/map.lua');
     const publishContractResult = await topjs.publishContract({
         account: pAccount,
         contractCode: data.toString(),
-        deposit: 200,
-        note: 'test_tx'
+        deposit: 400000,
+        note: 'test_tx',
+        // contractAccount
     });
     if (publishContractResult.errno != 0) {
-        console.error('publish contract error > ', publishContractResult.errmsg);
+        console.error('publish contract error > ',  publishContractResult.errmsg);
         return;
     }
     console.log('publish contract result >>> ', publishContractResult.data.exec_status == 1);
-    if (publishContractResult.errno != 0) {
-        return;
-    }
     const contract_address = publishContractResult.data.target_action.account_addr;
     
     let result = await topjs.getProperty({
@@ -52,6 +57,7 @@ module.exports = async () => {
     accountInfo = await topjs.accountInfo({
         account: pAccount
     });
+    await topjs.updateNonceAndLastHash(pAccount);
     result = await topjs.callContract({
         account: pAccount,
         contractAddress: contract_address,

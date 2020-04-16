@@ -19,7 +19,7 @@ class TopJs{
         
         this.version = version;
         this.utils = utils;
-        return new MethodProxy(this, new MethodFactory());
+        return new MethodProxy(this, new MethodFactory(options));
     }
 
     get currentProvider() {
@@ -51,6 +51,18 @@ class TopJs{
     setProvider(provider, options) {
         const resolvedProvider = this.pmf.resolve(provider, options);
         this._currentProvider = resolvedProvider;
+    }
+
+    async updateNonceAndLastHash(account) {
+        account = account ? account : this.defaultAccount;
+        let accountInfoResult = await this.accountInfo({account});
+        if (accountInfoResult && accountInfoResult.errno == 0 && accountInfoResult.data) {
+            account.nonce = accountInfoResult.data.nonce;
+            account.last_hash = accountInfoResult.data.last_hash;
+            account.last_hash_xxhash64 = accountInfoResult.data.last_hash_xxhash64;
+            return;
+        }
+        throw new Error ('update account nonce and last hash failed');
     }
 
     async getDefaultServerUrl(dnsurl, portType) {

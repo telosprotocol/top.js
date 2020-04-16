@@ -1,6 +1,6 @@
 {
   "name": "top-sdk-js",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "TOP SDK for JavaScript",
   "main": "index.js",
   "scripts": {

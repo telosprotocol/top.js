@@ -3,8 +3,10 @@ const methods = require('./methods');
 
 class MethodFactory {
 
-    constructor() {
+    constructor(options = {}) {
         this.methods = methods;
+        this.pollCount = options.pollCount;
+        this.pollDelayTime = options.pollDelayTime;
     }
 
     /**
@@ -37,6 +39,12 @@ class MethodFactory {
                 moduleInstance
             );
             obMethod.setAccountTransactionMethod(new methods.accountTransaction(moduleInstance));
+            if (this.pollCount) {
+                obMethod.pollCount = this.pollCount;
+            }
+            if (this.pollDelayTime) {
+                obMethod.pollDelayTime = this.pollDelayTime;
+            }
             return obMethod;
         }
 
