@@ -5,9 +5,8 @@ const actionParam = require('../../../utils/ActionParam');
 const XAction = require('../../lib/XAction');
 const argsLib = require('../../lib/ArgsLib');
 const config = require('../../model/Config');
-const ByteBuffer = require('../../../utils/ByteBuffer');
 
-class PledgeTGasMethod extends AbstractObservedTransactionMethod {
+class ClaimRewardMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
@@ -40,7 +39,6 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
         const txArgs = methodArguments[0];
         address = txArgs['from'] || account.address;
         const amount = txArgs['amount'];
-        const nodeType = txArgs['nodeType'];
         const method = true === this.use_transaction ? 'send_transaction' : this._methodName;
 
         const txActionParam = actionParam.ActionAssetOutParam('', amount, '');
@@ -52,11 +50,8 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
 
         const targetAction = new XAction();
         targetAction.set_action_type(xActionType.RunConstract);
-        targetAction.set_account_addr(config.Registeration);
-        targetAction.set_acton_name("node_register");
-        let stream = new ByteBuffer().littleEndian();
-        let targetParam = stream.int64(nodeType).pack();
-        targetAction.set_action_param(targetParam);
+        targetAction.set_account_addr(config.ClaimReward);
+        targetAction.set_acton_name("claim_reward");
         
         this.parameters = argsLib.getDefaultArgs({
             address,
@@ -74,4 +69,4 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
     }
 }
 
-module.exports = PledgeTGasMethod;
+module.exports = ClaimRewardMethod;

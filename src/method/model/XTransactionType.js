@@ -16,8 +16,15 @@ module.exports = {
     GetConsensusRandom : 15,
     CreateChildAccount : 16,
 
+    GetVote: 18,
+    ReturnVote: 19,
+    Vote: 20,
+    AbolishVote: 21,
+
     PledgeTokenTgas: 22,
     RedeemTokenTgas: 23,
     PledgeTokenDisk: 24,
-    RedeemTokenDisk: 25
+    RedeemTokenDisk: 25,
+    PledgeTokenVote: 27,
+    RedeemTokenVote: 28
 };
