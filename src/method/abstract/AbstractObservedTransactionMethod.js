@@ -4,8 +4,8 @@ class AbstractObservedTransactionMethod extends AbstractMethod {
     constructor(argsObj = {}, moduleInstance, ) {
         super(argsObj, moduleInstance);
         this.accountTransactionMethod = null;
-        this.pollCount = 200;
-        this.pollDelayTime = 2000;
+        this.pollCount = 100;
+        this.pollDelayTime = 3000;
     }
 
     /**
@@ -32,6 +32,9 @@ class AbstractObservedTransactionMethod extends AbstractMethod {
                 let obResult = await this.observeTransaction(this.methodArguments[0].account, response.tx_hash);
                 if (obResult) {
                     response = obResult;
+                }
+                if (response.errno !== 0 && this._arguments.parameters.body) {
+                    response.data = JSON.parse(this._arguments.parameters.body);
                 }
             }
             if (response) {

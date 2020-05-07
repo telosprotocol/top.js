@@ -37,7 +37,7 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
             throw new Error('transfer args length is not right');
         }
         const txArgs = methodArguments[0];
-        address = txArgs['from'] || account.address;
+        address = account.address;
         const amount = txArgs['amount'];
         const method = true === this.use_transaction ? 'send_transaction' : this._methodName;
 

@@ -60,7 +60,7 @@ class TopJs{
             account.nonce = accountInfoResult.data.nonce;
             account.last_hash = accountInfoResult.data.last_hash;
             account.last_hash_xxhash64 = accountInfoResult.data.last_hash_xxhash64;
-            return;
+            return account;
         }
         throw new Error ('update account nonce and last hash failed');
     }
