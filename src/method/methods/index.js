@@ -42,3 +42,9 @@ exports.pledgeTokenVote = require('./account/PledgeTokenVoteMethod');
 exports.redeemTokenVote = require('./account/RedeemTokenVoteMethod');
 exports.setVote = require('./account/SetVoteMethod');
 exports.abolishVote = require('./account/AbolishVoteMethod');
+
+// proposal
+exports.addProposal = require('./proposal/AddProposalMethod');
+exports.voteProposal = require('./proposal/VoteProposalMethod');
+exports.withdrawProposal = require('./proposal/WithdrawProposalMethod');
+exports.getProposal = require('./proposal/GetProposalMethod');
