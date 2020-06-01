@@ -7,7 +7,7 @@ const ByteBuffer = require('../../../utils/ByteBuffer');
 const Secp256k1Helper = require('../../../utils/Secp256k1Helper');
 const StringUtil = require("../../../utils");
 
-class PublishContractMethod extends AbstractObservedTransactionMethod {
+class DeployContractMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
@@ -106,4 +106,4 @@ class PublishContractMethod extends AbstractObservedTransactionMethod {
     }
 }
 
-module.exports = PublishContractMethod;
+module.exports = DeployContractMethod;

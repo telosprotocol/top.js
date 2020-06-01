@@ -1,12 +1,12 @@
 const AbstractObservedTransactionMethod = require('../../abstract/AbstractObservedTransactionMethod');
 const xActionType = require('../../model/XActionType');
 const xTransactionType = require('../../model/XTransactionType');
-const actionParam = require('../../../utils/ActionParam');
 const XAction = require('../../lib/XAction');
 const argsLib = require('../../lib/ArgsLib');
 const config = require('../../model/Config');
+const ByteBuffer = require('../../../utils/ByteBuffer');
 
-class RedeemDiskMethod extends AbstractObservedTransactionMethod {
+class SetDividendRateMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
@@ -37,21 +37,22 @@ class RedeemDiskMethod extends AbstractObservedTransactionMethod {
             throw new Error('transfer args length is not right');
         }
         const txArgs = methodArguments[0];
-        address = account.address;
-        const amount = txArgs['amount'];
+        address = txArgs['from'] || account.address;
+        const dividendRate = txArgs['dividendRate'];
         const method = true === this.use_transaction ? 'send_transaction' : this._methodName;
-
-        const txActionParam = actionParam.ActionAssetOutParam('', amount, '');
 
         const sourceAction = new XAction();
         sourceAction.set_action_type(xActionType.AssertOut);
         sourceAction.set_account_addr(address);
-        sourceAction.set_action_param(txActionParam);
+        sourceAction.set_action_param('0x');
 
         const targetAction = new XAction();
-        targetAction.set_action_type(xActionType.AssetIn);
-        targetAction.set_account_addr(address);
-        targetAction.set_action_param(txActionParam);
+        targetAction.set_action_type(xActionType.RunConstract);
+        targetAction.set_account_addr(config.Registeration);
+        targetAction.set_acton_name("set_dividend_rate");
+        let stream = new ByteBuffer().littleEndian();
+        let targetParam = stream.int64(dividendRate).pack();
+        targetAction.set_action_param(targetParam);
         
         this.parameters = argsLib.getDefaultArgs({
             address,
@@ -60,7 +61,7 @@ class RedeemDiskMethod extends AbstractObservedTransactionMethod {
             last_hash_xxhash64,
             nonce,
             method,
-            xTransactionType: xTransactionType.RedeemTokenDisk,
+            xTransactionType: xTransactionType.RunContract,
             sourceAction,
             targetAction,
             privateKeyBytes
@@ -69,4 +70,4 @@ class RedeemDiskMethod extends AbstractObservedTransactionMethod {
     }
 }
 
-module.exports = RedeemDiskMethod;
+module.exports = SetDividendRateMethod;

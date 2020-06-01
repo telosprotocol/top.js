@@ -1,11 +1,11 @@
 
 const AbstractMethod = require('../../abstract/AbstractMethod');
 
-class GetVoterRewardMethod extends AbstractMethod {
+class QueryNodeInfoMethod extends AbstractMethod {
 
     constructor(moduleInstance) {
         super({
-            methodName: 'get_voter_reward'
+            methodName: 'get_node_info'
         }, moduleInstance);
     }
 
@@ -25,11 +25,9 @@ class GetVoterRewardMethod extends AbstractMethod {
         account = account ? account : this.moduleInstance.defaultAccount;
         let { address, sequence_id, token } = account;
 
-        let {
-            voterAddress
+        const {
+            nodeAddress
         } = methodArguments[0];
-
-        voterAddress = voterAddress ? voterAddress : address;
 
         let parameters = {
             version: '1.0',
@@ -43,11 +41,11 @@ class GetVoterRewardMethod extends AbstractMethod {
             method: this._methodName,
             account_address: address,
             sequence_id,
-            params: { account:address, target:voterAddress }
+            params: { account:address, target:nodeAddress }
         }
         parameters.body = JSON.stringify(params);
         return parameters;
     }
 }
 
-module.exports = GetVoterRewardMethod;
+module.exports = QueryNodeInfoMethod;

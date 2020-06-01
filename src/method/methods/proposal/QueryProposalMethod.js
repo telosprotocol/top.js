@@ -1,7 +1,7 @@
 
 const AbstractMethod = require('../../abstract/AbstractMethod');
 
-class GetProposalMethod extends AbstractMethod {
+class QueryProposalMethod extends AbstractMethod {
 
     constructor(moduleInstance) {
         super({
@@ -48,4 +48,4 @@ class GetProposalMethod extends AbstractMethod {
     }
 }
 
-module.exports = GetProposalMethod;
+module.exports = QueryProposalMethod;

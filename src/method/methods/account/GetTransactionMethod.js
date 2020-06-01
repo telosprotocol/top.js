@@ -1,13 +1,13 @@
 
 const AbstractMethod = require('../../abstract/AbstractMethod');
+const StringUtil = require("../../../utils");
 
-class AccountInfoMethod extends AbstractMethod {
+class GetTransactionMethod extends AbstractMethod {
 
     constructor(moduleInstance) {
         super({
-            methodName: 'account_info'
+            methodName: 'account_transaction'
         }, moduleInstance);
-        this.account = null;
     }
 
     /**
@@ -21,13 +21,12 @@ class AccountInfoMethod extends AbstractMethod {
      */
     getArgs(methodArguments) {
         let {
-            account
+            account,
+            txHash
         } = methodArguments[0] || {};
         account = account ? account : this.moduleInstance.defaultAccount;
-        this.account = account;
-
-        let { address, sequence_id, token } = account;
-
+        let { address, sequence_id, token, last_hash, } = account;
+        txHash = txHash ? txHash : last_hash;
         let parameters = {
             version: '1.0',
             account_address: address,
@@ -40,7 +39,10 @@ class AccountInfoMethod extends AbstractMethod {
             method: this._methodName,
             account_address: address,
             sequence_id,
-            params: { account: address }
+            params: { 
+                account: address,
+                tx_hash: txHash
+            }
         }
         parameters.body = JSON.stringify(params);
         return parameters;
@@ -56,29 +58,14 @@ class AccountInfoMethod extends AbstractMethod {
      * @returns {*}
      */
     afterExecution(response) {
-        if (response.errno !== 0) {
-            return;
-        }
-        if (response.sequence_id) {
-            this.account.sequence_id = response.sequence_id;
-        }
-        if (response.data && response.data.balance) {
-            this.account.balance = response.data.balance;
-        }
-        if (response.data && response.data.last_hash) {
-            this.account.last_hash = response.data.last_hash;
-        }
-        if (response.data && response.data.nonce) {
-            this.account.nonce = response.data.nonce;
-        }
-        if (response.data && response.data.last_unit_height) {
-            this.account.last_unit_height = response.data.last_unit_height;
-        }
-        if (response.data && response.data.last_hash_xxhash64) {
-            this.account.last_hash_xxhash64 = response.data.last_hash_xxhash64;
-        }
+        // if (response.errno == 0) {
+            // const ap = response.data.target_action.action_param;
+            // const ss = StringUtil.hex2bytes(ap.replace('0x', ''));
+            // const r = Buffer.from(ss).toString('utf8', 16, ss.length)
+            // console.log(r);
+        // }
         return response;
     }
 }
 
-module.exports = AccountInfoMethod;
+module.exports = GetTransactionMethod;

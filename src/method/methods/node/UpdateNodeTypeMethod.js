@@ -5,8 +5,9 @@ const actionParam = require('../../../utils/ActionParam');
 const XAction = require('../../lib/XAction');
 const argsLib = require('../../lib/ArgsLib');
 const config = require('../../model/Config');
+const ByteBuffer = require('../../../utils/ByteBuffer');
 
-class PledgeTGasMethod extends AbstractObservedTransactionMethod {
+class UpdateNodeTypeMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
@@ -37,8 +38,9 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
             throw new Error('transfer args length is not right');
         }
         const txArgs = methodArguments[0];
-        address = account.address;
-        const amount = txArgs['amount'];
+        address = txArgs['from'] || account.address;
+        const amount = txArgs['mortgage'];
+        const nodeType = txArgs['nodeType'];
         const method = true === this.use_transaction ? 'send_transaction' : this._methodName;
 
         const txActionParam = actionParam.ActionAssetOutParam('', amount, '');
@@ -50,9 +52,11 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
 
         const targetAction = new XAction();
         targetAction.set_action_type(xActionType.RunConstract);
-        targetAction.set_account_addr(config.PledgeSmartContract);
-        targetAction.set_acton_name("redeem_token")
-        targetAction.set_action_param(txActionParam);
+        targetAction.set_account_addr(config.Registeration);
+        targetAction.set_acton_name("update_node_type");
+        let stream = new ByteBuffer().littleEndian();
+        let targetParam = stream.string(nodeType).pack();
+        targetAction.set_action_param(targetParam);
         
         this.parameters = argsLib.getDefaultArgs({
             address,
@@ -61,7 +65,7 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
             last_hash_xxhash64,
             nonce,
             method,
-            xTransactionType: xTransactionType.RedeemTokenTgas,
+            xTransactionType: xTransactionType.RunContract,
             sourceAction,
             targetAction,
             privateKeyBytes
@@ -70,4 +74,4 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
     }
 }
 
-module.exports = PledgeTGasMethod;
+module.exports = UpdateNodeTypeMethod;

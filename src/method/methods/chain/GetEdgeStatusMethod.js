@@ -1,11 +1,11 @@
 
 const AbstractMethod = require('../../abstract/AbstractMethod');
 
-class GetNodeRewardMethod extends AbstractMethod {
+class GetEdgeStatusMethod extends AbstractMethod {
 
     constructor(moduleInstance) {
         super({
-            methodName: 'get_node_reward'
+            methodName: 'get_edge_status'
         }, moduleInstance);
     }
 
@@ -24,11 +24,7 @@ class GetNodeRewardMethod extends AbstractMethod {
         } = methodArguments[0] || {};
         account = account ? account : this.moduleInstance.defaultAccount;
         let { address, sequence_id, token } = account;
-
-        const {
-            nodeAddress
-        } = methodArguments[0];
-
+        
         let parameters = {
             version: '1.0',
             account_address: address,
@@ -41,11 +37,11 @@ class GetNodeRewardMethod extends AbstractMethod {
             method: this._methodName,
             account_address: address,
             sequence_id,
-            params: { account:address, target:nodeAddress }
+            params: { account:address }
         }
         parameters.body = JSON.stringify(params);
         return parameters;
     }
 }
 
-module.exports = GetNodeRewardMethod;
+module.exports = GetEdgeStatusMethod;

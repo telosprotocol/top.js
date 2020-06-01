@@ -1,19 +1,18 @@
 const AbstractObservedTransactionMethod = require('../../abstract/AbstractObservedTransactionMethod');
 const xActionType = require('../../model/XActionType');
 const xTransactionType = require('../../model/XTransactionType');
-const actionParam = require('../../../utils/ActionParam');
-const ByteBuffer = require('../../../utils/ByteBuffer');
 const XAction = require('../../lib/XAction');
 const argsLib = require('../../lib/ArgsLib');
 const config = require('../../model/Config');
 
-class AddProposalMethod extends AbstractObservedTransactionMethod {
+class UnRegisterNodeMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
             methodName: 'send_transaction',
             use_transaction: true
         }, moduleInstance);
+        this.parameters = null;
     }
 
     /**
@@ -37,14 +36,8 @@ class AddProposalMethod extends AbstractObservedTransactionMethod {
             throw new Error('transfer args length is not right');
         }
         const txArgs = methodArguments[0];
-        address = account.address;
-        const proposal = txArgs['proposal'] || {};
+        address = txArgs['from'] || account.address;
         const method = true === this.use_transaction ? 'send_transaction' : this._methodName;
-
-        const { proposalId, parameter, origValue, newValue, modificationDescription, proposalClientAddress, deposit, chainTimerHeight, updateType, priority} = proposal;
-        let stream = new ByteBuffer().littleEndian();
-        stream.string(proposalId).string(parameter).string(origValue).string(newValue).string(modificationDescription).string(proposalClientAddress).int64(deposit).int64(chainTimerHeight).string(updateType).short(priority);
-        const txActionParam = stream.pack();
 
         const sourceAction = new XAction();
         sourceAction.set_action_type(xActionType.AssertOut);
@@ -52,9 +45,8 @@ class AddProposalMethod extends AbstractObservedTransactionMethod {
 
         const targetAction = new XAction();
         targetAction.set_action_type(xActionType.RunConstract);
-        targetAction.set_account_addr(config.BeaconCgc);
-        targetAction.set_action_param(txActionParam);
-        targetAction.set_acton_name("add_proposal")
+        targetAction.set_account_addr(config.Registeration);
+        targetAction.set_acton_name("node_deregister");
         
         this.parameters = argsLib.getDefaultArgs({
             address,
@@ -72,4 +64,4 @@ class AddProposalMethod extends AbstractObservedTransactionMethod {
     }
 }
 
-module.exports = AddProposalMethod;
+module.exports = UnRegisterNodeMethod;

@@ -6,14 +6,13 @@ const XAction = require('../../lib/XAction');
 const argsLib = require('../../lib/ArgsLib');
 const config = require('../../model/Config');
 
-class ClaimRewardMethod extends AbstractObservedTransactionMethod {
+class StakeGasMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
             methodName: 'send_transaction',
             use_transaction: true
         }, moduleInstance);
-        this.parameters = null;
     }
 
     /**
@@ -37,7 +36,7 @@ class ClaimRewardMethod extends AbstractObservedTransactionMethod {
             throw new Error('transfer args length is not right');
         }
         const txArgs = methodArguments[0];
-        address = txArgs['from'] || account.address;
+        address = account.address;
         const amount = txArgs['amount'];
         const method = true === this.use_transaction ? 'send_transaction' : this._methodName;
 
@@ -50,8 +49,9 @@ class ClaimRewardMethod extends AbstractObservedTransactionMethod {
 
         const targetAction = new XAction();
         targetAction.set_action_type(xActionType.RunConstract);
-        targetAction.set_account_addr(config.ClaimReward);
-        targetAction.set_acton_name("claim_reward");
+        targetAction.set_account_addr(config.PledgeSmartContract);
+        targetAction.set_acton_name("pledge_token")
+        targetAction.set_action_param(txActionParam);
         
         this.parameters = argsLib.getDefaultArgs({
             address,
@@ -60,7 +60,7 @@ class ClaimRewardMethod extends AbstractObservedTransactionMethod {
             last_hash_xxhash64,
             nonce,
             method,
-            xTransactionType: xTransactionType.RunContract,
+            xTransactionType: xTransactionType.PledgeTokenTgas,
             sourceAction,
             targetAction,
             privateKeyBytes
@@ -69,4 +69,4 @@ class ClaimRewardMethod extends AbstractObservedTransactionMethod {
     }
 }
 
-module.exports = ClaimRewardMethod;
+module.exports = StakeGasMethod;

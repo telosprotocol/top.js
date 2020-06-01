@@ -1,7 +1,7 @@
 
 const AbstractMethod = require('../../abstract/AbstractMethod');
 
-class RequestTokenMethod extends AbstractMethod {
+class PassportMethod extends AbstractMethod {
 
     constructor(moduleInstance) {
         super({
@@ -66,4 +66,4 @@ class RequestTokenMethod extends AbstractMethod {
     }
 }
 
-module.exports = RequestTokenMethod;
+module.exports = PassportMethod;

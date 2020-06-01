@@ -4,17 +4,14 @@ const xTransactionType = require('../../model/XTransactionType');
 const actionParam = require('../../../utils/ActionParam');
 const XAction = require('../../lib/XAction');
 const argsLib = require('../../lib/ArgsLib');
-const config = require('../../model/Config');
-const ByteBuffer = require('../../../utils/ByteBuffer');
 
-class PledgeTGasMethod extends AbstractObservedTransactionMethod {
+class UnStakeVoteMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
             methodName: 'send_transaction',
             use_transaction: true
         }, moduleInstance);
-        this.parameters = null;
     }
 
     /**
@@ -39,8 +36,7 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
         }
         const txArgs = methodArguments[0];
         address = txArgs['from'] || account.address;
-        const amount = txArgs['mortgage'];
-        const nodeType = txArgs['nodeType'];
+        const amount = txArgs['amount'];
         const method = true === this.use_transaction ? 'send_transaction' : this._methodName;
 
         const txActionParam = actionParam.ActionAssetOutParam('', amount, '');
@@ -51,12 +47,7 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
         sourceAction.set_action_param(txActionParam);
 
         const targetAction = new XAction();
-        targetAction.set_action_type(xActionType.RunConstract);
-        targetAction.set_account_addr(config.Registeration);
-        targetAction.set_acton_name("node_register");
-        let stream = new ByteBuffer().littleEndian();
-        let targetParam = stream.string(nodeType).pack();
-        targetAction.set_action_param(targetParam);
+        targetAction.set_account_addr(address);
         
         this.parameters = argsLib.getDefaultArgs({
             address,
@@ -65,7 +56,7 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
             last_hash_xxhash64,
             nonce,
             method,
-            xTransactionType: xTransactionType.RunContract,
+            xTransactionType: xTransactionType.RedeemTokenVote,
             sourceAction,
             targetAction,
             privateKeyBytes
@@ -74,4 +65,4 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
     }
 }
 
-module.exports = PledgeTGasMethod;
+module.exports = UnStakeVoteMethod;

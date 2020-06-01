@@ -2,18 +2,18 @@ const AbstractObservedTransactionMethod = require('../../abstract/AbstractObserv
 const xActionType = require('../../model/XActionType');
 const xTransactionType = require('../../model/XTransactionType');
 const actionParam = require('../../../utils/ActionParam');
+const ByteBuffer = require('../../../utils/ByteBuffer');
 const XAction = require('../../lib/XAction');
 const argsLib = require('../../lib/ArgsLib');
 const config = require('../../model/Config');
 
-class PledgeDiskMethod extends AbstractObservedTransactionMethod {
+class RedeemNodeDepositMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
             methodName: 'send_transaction',
             use_transaction: true
         }, moduleInstance);
-        this.parameters = null;
     }
 
     /**
@@ -37,21 +37,19 @@ class PledgeDiskMethod extends AbstractObservedTransactionMethod {
             throw new Error('transfer args length is not right');
         }
         const txArgs = methodArguments[0];
-        address = account.address;
+        address = txArgs['from'] || account.address;
         const amount = txArgs['amount'];
+        const lockTime = txArgs['lockTime'] || 0;
         const method = true === this.use_transaction ? 'send_transaction' : this._methodName;
-
-        const txActionParam = actionParam.ActionAssetOutParam('', amount, '');
 
         const sourceAction = new XAction();
         sourceAction.set_action_type(xActionType.AssertOut);
         sourceAction.set_account_addr(address);
-        sourceAction.set_action_param(txActionParam);
 
         const targetAction = new XAction();
-        targetAction.set_action_type(xActionType.AssetIn);
-        targetAction.set_account_addr(address);
-        targetAction.set_action_param(txActionParam);
+        targetAction.set_account_addr(config.Registeration);
+        targetAction.set_action_type(xActionType.RunConstract);
+        targetAction.set_acton_name('redeem');
         
         this.parameters = argsLib.getDefaultArgs({
             address,
@@ -60,7 +58,7 @@ class PledgeDiskMethod extends AbstractObservedTransactionMethod {
             last_hash_xxhash64,
             nonce,
             method,
-            xTransactionType: xTransactionType.PledgeTokenDisk,
+            xTransactionType: xTransactionType.RunContract,
             sourceAction,
             targetAction,
             privateKeyBytes
@@ -69,4 +67,4 @@ class PledgeDiskMethod extends AbstractObservedTransactionMethod {
     }
 }
 
-module.exports = PledgeDiskMethod;
+module.exports = RedeemNodeDepositMethod;

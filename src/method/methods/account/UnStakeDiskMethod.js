@@ -6,13 +6,14 @@ const XAction = require('../../lib/XAction');
 const argsLib = require('../../lib/ArgsLib');
 const config = require('../../model/Config');
 
-class PledgeTGasMethod extends AbstractObservedTransactionMethod {
+class UnStakeDiskMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
             methodName: 'send_transaction',
             use_transaction: true
         }, moduleInstance);
+        this.parameters = null;
     }
 
     /**
@@ -48,9 +49,8 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
         sourceAction.set_action_param(txActionParam);
 
         const targetAction = new XAction();
-        targetAction.set_action_type(xActionType.RunConstract);
-        targetAction.set_account_addr(config.PledgeSmartContract);
-        targetAction.set_acton_name("pledge_token")
+        targetAction.set_action_type(xActionType.AssetIn);
+        targetAction.set_account_addr(address);
         targetAction.set_action_param(txActionParam);
         
         this.parameters = argsLib.getDefaultArgs({
@@ -60,7 +60,7 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
             last_hash_xxhash64,
             nonce,
             method,
-            xTransactionType: xTransactionType.PledgeTokenTgas,
+            xTransactionType: xTransactionType.RedeemTokenDisk,
             sourceAction,
             targetAction,
             privateKeyBytes
@@ -69,4 +69,4 @@ class PledgeTGasMethod extends AbstractObservedTransactionMethod {
     }
 }
 
-module.exports = PledgeTGasMethod;
+module.exports = UnStakeDiskMethod;

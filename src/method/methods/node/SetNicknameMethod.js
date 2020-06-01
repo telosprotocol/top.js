@@ -1,19 +1,19 @@
 const AbstractObservedTransactionMethod = require('../../abstract/AbstractObservedTransactionMethod');
 const xActionType = require('../../model/XActionType');
 const xTransactionType = require('../../model/XTransactionType');
-const actionParam = require('../../../utils/ActionParam');
-const ByteBuffer = require('../../../utils/ByteBuffer');
 const XAction = require('../../lib/XAction');
 const argsLib = require('../../lib/ArgsLib');
 const config = require('../../model/Config');
+const ByteBuffer = require('../../../utils/ByteBuffer');
 
-class PledgeTokenVoteMethod extends AbstractObservedTransactionMethod {
+class SetDividendRateMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
             methodName: 'send_transaction',
             use_transaction: true
         }, moduleInstance);
+        this.parameters = null;
     }
 
     /**
@@ -38,21 +38,21 @@ class PledgeTokenVoteMethod extends AbstractObservedTransactionMethod {
         }
         const txArgs = methodArguments[0];
         address = txArgs['from'] || account.address;
-        const amount = txArgs['amount'] || 0;
-        const lockTime = txArgs['lockTime'] || 0;
+        const nickname = txArgs['nickname'];
         const method = true === this.use_transaction ? 'send_transaction' : this._methodName;
 
-        let stream = new ByteBuffer().littleEndian();
-        stream.int64(amount).short(lockTime).string('');
-        const txActionParam = stream.pack();
-
         const sourceAction = new XAction();
-        sourceAction.set_action_type(xActionType.PledgeTokenVote);
+        sourceAction.set_action_type(xActionType.AssertOut);
         sourceAction.set_account_addr(address);
-        sourceAction.set_action_param(txActionParam);
+        sourceAction.set_action_param('0x');
 
         const targetAction = new XAction();
-        targetAction.set_account_addr(address);
+        targetAction.set_action_type(xActionType.RunConstract);
+        targetAction.set_account_addr(config.Registeration);
+        targetAction.set_acton_name("set_nickname");
+        let stream = new ByteBuffer().littleEndian();
+        let targetParam = stream.string(nickname).pack();
+        targetAction.set_action_param(targetParam);
         
         this.parameters = argsLib.getDefaultArgs({
             address,
@@ -61,7 +61,7 @@ class PledgeTokenVoteMethod extends AbstractObservedTransactionMethod {
             last_hash_xxhash64,
             nonce,
             method,
-            xTransactionType: xTransactionType.PledgeTokenVote,
+            xTransactionType: xTransactionType.RunContract,
             sourceAction,
             targetAction,
             privateKeyBytes
@@ -70,4 +70,4 @@ class PledgeTokenVoteMethod extends AbstractObservedTransactionMethod {
     }
 }
 
-module.exports = PledgeTokenVoteMethod;
+module.exports = SetDividendRateMethod;

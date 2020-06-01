@@ -7,7 +7,7 @@ const XAction = require('../../lib/XAction');
 const argsLib = require('../../lib/ArgsLib');
 const config = require('../../model/Config');
 
-class RedeemMethod extends AbstractObservedTransactionMethod {
+class TCCVoteMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
@@ -37,19 +37,24 @@ class RedeemMethod extends AbstractObservedTransactionMethod {
             throw new Error('transfer args length is not right');
         }
         const txArgs = methodArguments[0];
-        address = txArgs['from'] || account.address;
-        const amount = txArgs['amount'];
-        const lockTime = txArgs['lockTime'] || 0;
+        address = account.address;
+        const proposal = txArgs['proposal'] || {};
         const method = true === this.use_transaction ? 'send_transaction' : this._methodName;
+
+        const { proposalId, parameter, origValue, newValue, modificationDescription, proposalClientAddress, deposit, chainTimerHeight, updateType, priority} = proposal;
+        let stream = new ByteBuffer().littleEndian();
+        stream.string(proposalId).string(parameter).string(origValue).string(newValue).string(modificationDescription).string(proposalClientAddress).int64(deposit).int64(chainTimerHeight).string(updateType).short(priority);
+        const txActionParam = stream.pack();
 
         const sourceAction = new XAction();
         sourceAction.set_action_type(xActionType.AssertOut);
         sourceAction.set_account_addr(address);
 
         const targetAction = new XAction();
-        targetAction.set_account_addr(config.Registeration);
         targetAction.set_action_type(xActionType.RunConstract);
-        targetAction.set_acton_name('redeem');
+        targetAction.set_account_addr(config.BeaconCgc);
+        targetAction.set_action_param(txActionParam);
+        targetAction.set_acton_name("add_proposal")
         
         this.parameters = argsLib.getDefaultArgs({
             address,
@@ -67,4 +72,4 @@ class RedeemMethod extends AbstractObservedTransactionMethod {
     }
 }
 
-module.exports = RedeemMethod;
+module.exports = TCCVoteMethod;

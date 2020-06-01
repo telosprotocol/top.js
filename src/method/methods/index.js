@@ -2,49 +2,56 @@
 // 驼峰规则，首字母改成小写
 
 // Account
-exports.accountInfo = require('./account/AccountInfoMethod');
+exports.getAccount = require('./account/GetAccountMethod');
 exports.createAccount = require('./account/CreateAccountMethod');
-exports.accountTransaction = require('./account/AccountTransactionMethod');
-exports.claimReward = require('./account/ClaimRewardMethod');
-exports.getVoterReward = require('./account/GetVoterRewardMethod');
+exports.getTransaction = require('./account/GetTransactionMethod');
+exports.claimVoterDividend = require('./account/ClaimVoterDividendMethod');
+exports.queryVoterDividend = require('./account/QueryVoterDividendMethod');
+exports.listVoteUsed = require('./account/ListVoteUsedMethod');
 
 // transaction
-exports.requestToken = require('./account/RequestTokenMethod');
+exports.passport = require('./account/PassportMethod');
 exports.transfer = require('./account/TransferMethod');
 
 // contract
-exports.publishContract = require('./account/PublishContractMethod');
+exports.deployContract = require('./account/DeployContractMethod');
 exports.getProperty = require('./account/GetPropertyMethod');
 exports.callContract = require('./account/CallContractMethod');
 
 // pledge nad redeem
-exports.pledgeDisk = require('./account/PledgeDiskMethod');
-exports.pledgeTgas = require('./account/PledgeTGasMethod');
-exports.redeemDisk = require('./account/RedeemDiskMethod');
-exports.redeemTgas = require('./account/RedeemTgasMethod');
+exports.stakeDisk = require('./account/StakeDiskMethod');
+exports.stakeGas = require('./account/StakeGasMethod');
+exports.unStakeDisk = require('./account/UnStakeDiskMethod');
+exports.unStakeTgas = require('./account/UnStakeGasMethod');
 
 // node register and deRegister
-exports.nodeRegister = require('./node/NodeRegisterMethod');
-exports.nodeDeRegister = require('./node/NodeDeRegisterMethod');
-exports.getNodeInfo = require('./node/NodeInfoMethod');
-exports.getNodeReward = require('./node/GetNodeRewardMethod');
+exports.registerNode = require('./node/RegisterNodeMethod');
+exports.unRegisterNode = require('./node/UnRegisterNodeMethod');
+exports.queryNodeInfo = require('./node/QueryNodeInfoMethod');
+exports.queryNodeReward = require('./node/QueryNodeRewardMethod');
 exports.claimNodeReward = require('./node/ClaimNodeRewardMethod');
-exports.redeem = require('./node/RedeemMethod');
+exports.redeemNodeDeposit = require('./node/RedeemNodeDepositMethod');
+exports.setDividendRate = require('./node/SetDividendRateMethod');
+exports.setNickname = require('./node/SetNicknameMethod');
+exports.stakeDeposit = require('./node/StakeDepositMethod');
+exports.unStakeDeposit = require('./node/UnStakeDepositMethod');
+exports.udpateNodeType = require('./node/UpdateNodeTypeMethod');
 
 // block
 exports.getBlock = require('./block/GetBlockMethod');
 
 // chainInfo
-exports.getChainInfo = require('./chain/ChainInfoMethod');
+exports.getChainInfo = require('./chain/GetChainInfoMethod');
+exports.getEdgeStatus = require('./chain/GetEdgeStatusMethod');
 
 // vote
-exports.pledgeTokenVote = require('./account/PledgeTokenVoteMethod');
-exports.redeemTokenVote = require('./account/RedeemTokenVoteMethod');
-exports.setVote = require('./account/SetVoteMethod');
-exports.abolishVote = require('./account/AbolishVoteMethod');
+exports.stakeVote = require('./account/StakeVoteMethod');
+exports.unStakeVote = require('./account/UnStakeVoteMethod');
+exports.voteNode = require('./account/VoteNodeMethod');
+exports.unVoteNode = require('./account/UnVoteNodeMethod');
 
 // proposal
-exports.addProposal = require('./proposal/AddProposalMethod');
-exports.voteProposal = require('./proposal/VoteProposalMethod');
+exports.submitProposal = require('./proposal/SubmitProposalMethod');
+exports.tccVote = require('./proposal/TCCVoteMethod');
 exports.withdrawProposal = require('./proposal/WithdrawProposalMethod');
-exports.getProposal = require('./proposal/GetProposalMethod');
+exports.queryProposal = require('./proposal/QueryProposalMethod');

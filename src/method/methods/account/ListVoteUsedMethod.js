@@ -1,11 +1,11 @@
 
 const AbstractMethod = require('../../abstract/AbstractMethod');
 
-class ChainInfoMethod extends AbstractMethod {
+class ListVoteUsedMethod extends AbstractMethod {
 
     constructor(moduleInstance) {
         super({
-            methodName: 'get_chain_info'
+            methodName: 'get_vote_dist'
         }, moduleInstance);
     }
 
@@ -44,4 +44,4 @@ class ChainInfoMethod extends AbstractMethod {
     }
 }
 
-module.exports = ChainInfoMethod;
+module.exports = ListVoteUsedMethod;

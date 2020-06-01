@@ -38,7 +38,7 @@ class MethodFactory {
             const obMethod = new method(
                 moduleInstance
             );
-            obMethod.setAccountTransactionMethod(new methods.accountTransaction(moduleInstance));
+            obMethod.setAccountTransactionMethod(new methods.getTransaction(moduleInstance));
             if (this.pollCount) {
                 obMethod.pollCount = this.pollCount;
             }
