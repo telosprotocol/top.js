@@ -55,7 +55,7 @@ class TopJs{
 
     async updateNonceAndLastHash(account) {
         account = account ? account : this.defaultAccount;
-        let accountInfoResult = await this.accountInfo({account});
+        let accountInfoResult = await this.getAccount({account});
         if (accountInfoResult && accountInfoResult.errno == 0 && accountInfoResult.data) {
             account.nonce = accountInfoResult.data.nonce;
             account.last_hash = accountInfoResult.data.last_hash;
