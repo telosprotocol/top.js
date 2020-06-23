@@ -74,7 +74,7 @@ class AbstractObservedTransactionMethod extends AbstractMethod {
                     }]);
                     let resultTemp = await this.accountTransactionMethod.execute();
                     count++;
-                    if (resultTemp && resultTemp.errno == 0 && resultTemp.data && resultTemp.data.exec_status == 1) {
+                    if (resultTemp && resultTemp.errno == 0 && resultTemp.data && resultTemp.data.confirm_unit_info && resultTemp.data.confirm_unit_info.exec_status == 1) {
                         clearInterval(interval);
                         resolve(resultTemp);
                     } else if (resultTemp && resultTemp.errno != 0 && resultTemp.errno != 11) {

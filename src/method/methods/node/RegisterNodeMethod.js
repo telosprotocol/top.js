@@ -42,6 +42,7 @@ class RegisterNodeMethod extends AbstractObservedTransactionMethod {
         const amount = txArgs['mortgage'];
         const nodeType = txArgs['nodeType'];
         const nickname = txArgs['nickname'];
+        const key = txArgs['key'];
         const method = true === this.use_transaction ? 'send_transaction' : this._methodName;
 
         const txActionParam = actionParam.ActionAssetOutParam('', amount, '');
@@ -56,7 +57,7 @@ class RegisterNodeMethod extends AbstractObservedTransactionMethod {
         targetAction.set_account_addr(config.Registeration);
         targetAction.set_acton_name("node_register");
         let stream = new ByteBuffer().littleEndian();
-        let targetParam = stream.string(nodeType).string(nickname).pack();
+        let targetParam = stream.string(nodeType).string(nickname).string(key).pack();
         targetAction.set_action_param(targetParam);
         
         this.parameters = argsLib.getDefaultArgs({

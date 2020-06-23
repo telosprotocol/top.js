@@ -196,15 +196,12 @@ class XTransaction extends XTransactionHeader {
         this.transaction_hash = undefined;
         this.authorization = "";
         this.public_key = "";
-        this.confirm_unit_height = 0;
         this.edge_nodeid = "";
         this.ext = "";
         this.flag = 0;
-        this.recv_unit_height = 0;
-        this.send_unit_height = 0;
-        this.tx_exec_status = 0;
-        this.recv_tx_exec_status = 0;
-        this.exec_status = 0;
+        this.confirm_unit_info = {
+            exec_status: 0
+        };
     }
     serialize_write(stream) {
         const begin_pos = new Uint8Array(stream.pack()).length;
