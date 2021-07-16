@@ -23,35 +23,36 @@ class AbstractObservedTransactionMethod extends AbstractMethod {
 
     async execute() {
         this.beforeExecution(this.moduleInstance);
-        try {
-            if (!this.moduleInstance.currentProvider) {
-                throw new Error('provider is null');
-            }
-            let response = await this.moduleInstance.currentProvider.send(this._methodName, this._arguments.parameters);
-            if (response && response.errno == 0 && response.tx_hash) {
-                let obResult = await this.observeTransaction(this.methodArguments[0].account, response.tx_hash);
-                if (obResult) {
-                    response = obResult;
-                }
-                if (response.errno !== 0 && this._arguments.parameters.body) {
-                    response.data = JSON.parse(this._arguments.parameters.body);
-                }
-            }
-            if (response) {
-                response = this.afterExecution(response);
-            }
-            if (this._arguments.callback) {
-                this._arguments.callback(false, response);
-                return;
-            }
-            return response;
-        } catch (error) {
-            if (this._arguments.callback) {
-                this._arguments.callback(error, null);
-                return;
-            }
-            throw error;
-        }
+        return this._arguments.parameters;
+        // try {
+        //     if (!this.moduleInstance.currentProvider) {
+        //         throw new Error('provider is null');
+        //     }
+        //     let response = await this.moduleInstance.currentProvider.send(this._methodName, this._arguments.parameters);
+        //     if (response && response.errno == 0 && response.tx_hash) {
+        //         let obResult = await this.observeTransaction(this.methodArguments[0].account, response.tx_hash);
+        //         if (obResult) {
+        //             response = obResult;
+        //         }
+        //         if (response.errno !== 0 && this._arguments.parameters.body) {
+        //             response.data = JSON.parse(this._arguments.parameters.body);
+        //         }
+        //     }
+        //     if (response) {
+        //         response = this.afterExecution(response);
+        //     }
+        //     if (this._arguments.callback) {
+        //         this._arguments.callback(false, response);
+        //         return;
+        //     }
+        //     return response;
+        // } catch (error) {
+        //     if (this._arguments.callback) {
+        //         this._arguments.callback(error, null);
+        //         return;
+        //     }
+        //     throw error;
+        // }
     }
 
     /**

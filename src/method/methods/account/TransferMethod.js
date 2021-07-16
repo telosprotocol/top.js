@@ -46,7 +46,7 @@ class TransferMethod extends AbstractObservedTransactionMethod {
 
         let parameters = {
             version: '1.0',
-            account_address: address,
+            target_account_addr: address,
             token,
             method: 'send_transaction',
             sequence_id
@@ -54,7 +54,7 @@ class TransferMethod extends AbstractObservedTransactionMethod {
         const params = {
             version: '1.0',
             method: true === this.use_transaction ? 'send_transaction' : this._methodName,
-            account_address: address,
+            target_account_addr: address,
             sequence_id,
         }
         const txActionParam = actionParam.ActionAssetOutParam('', amount, txData);

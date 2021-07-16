@@ -5,7 +5,7 @@ class GetChainInfoMethod extends AbstractMethod {
 
     constructor(moduleInstance) {
         super({
-            methodName: 'get_chain_info'
+            methodName: 'getChainInfo'
         }, moduleInstance);
     }
 
@@ -27,7 +27,7 @@ class GetChainInfoMethod extends AbstractMethod {
         
         let parameters = {
             version: '1.0',
-            account_address: address,
+            target_account_addr: address,
             token,
             method: this._methodName,
             sequence_id
@@ -35,7 +35,7 @@ class GetChainInfoMethod extends AbstractMethod {
         const params = {
             version: '1.0',
             method: this._methodName,
-            account_address: address,
+            target_account_addr: address,
             sequence_id,
             params: { account:address }
         }

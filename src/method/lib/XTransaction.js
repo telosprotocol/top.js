@@ -9,56 +9,44 @@ class XTransactionHeader {
     constructor() {
         this.transaction_type = 0;
         this.transaction_len = 0;
-        this.version = 0;
-        this.to_network_id = 0;
-        this.from_network_id = 0;
-        this.to_account_id = 0;
-        this.from_account_id = 0;
+        this.tx_structure_version = 0;
+        this.to_ledger_id = 0;
+        this.from_ledger_id = 0;
         this.gas_price = 0;
         this.gas_limit = 0;
         this.deposit = 0;
         this.expire_duration = 0;
-        this.fire_timestamp = 0;
-        this.trans_random_nounce = 0;
-        this.hash_work_proof = 0;
-        this.last_unit_hight  = 0;
-        this.last_unit_hash  = 0;
-        this.last_trans_nonce  = 0;
-        this.last_trans_hash  = "";
-        this.parent_account = "";
+        this.send_timestamp = 0;
+        this.tx_random_nonce = 0;
+        this.premium_price = 0;
+        this.last_tx_nonce  = 0;
+        this.last_tx_hash  = "";
         this.confirm_action = "";
         this.authority_keys = "";
         this.ext = "";
+        this.note = "";
     }
 
     serialize_write(stream) {
         const begin_pos = new Uint8Array(stream.pack()).length;
-        let last_trans_hash = this.last_trans_hash;
-        last_trans_hash = last_trans_hash.replace("0x","");
+        last_trans_hash = this.last_tx_hash.replace("0x","");
         let le_last_trans_hash =  StringUtil.little_endian(last_trans_hash);
         const last_trans_hash_byte = StringUtil.hex2bytes(le_last_trans_hash);
         stream.ushort(this.transaction_type)
             .ushort(this.transaction_len)
-            .uint32(this.version)
-            .int64(this.to_account_id)
-            .int64(this.from_account_id)
-            .ushort(this.to_network_id)
-            .ushort(this.from_network_id)
+            .uint32(this.tx_structure_version)
+            .ushort(this.to_ledger_id)
+            .ushort(this.from_ledger_id)
             .uint32(this.deposit)
-            // .uint32(this.gas_price)
-            // .uint32(this.gas_limit)
             .ushort(this.expire_duration)
-            .int64(this.fire_timestamp)
-            .uint32(this.trans_random_nounce)
-            .uint32(this.hash_work_proof)
-            .int64(this.last_unit_hight)
-            .int64(this.last_unit_hash)
-            .int64(this.last_trans_nonce)
+            .int64(this.send_timestamp)
+            .uint32(this.tx_random_nonce)
+            .uint32(this.premium_price)
+            .int64(this.last_tx_nonce)
             .byteArray(last_trans_hash_byte,8)
-            .string(this.parent_account)
-            .string(this.authority_keys)
-            .string(this.confirm_action)
-            .string(this.ext);
+            .string(this.challenge_proof)
+            .string(this.ext)
+            .string(this.note);
         const end_pos = new Uint8Array(stream.pack()).length;
         return end_pos - begin_pos;
     }
@@ -75,35 +63,23 @@ class XTransactionHeader {
     set_transaction_len(transaction_len) {
         this.transaction_len = transaction_len;
     }
-    get_version() {
-        return this.version;
+    get_tx_structure_version() {
+        return this.tx_structure_version;
     }
-    set_version(version) {
-        this.version = version;
+    set_tx_structure_version(tx_structure_version) {
+        this.tx_structure_version = tx_structure_version;
     }
-    get_to_network_id() {
-        return this.to_network_id;
+    get_to_ledger_id() {
+        return this.to_ledger_id;
     }
-    set_to_network_id(to_network_id) {
-        this.to_network_id = to_network_id;
+    set_to_ledger_id(to_ledger_id) {
+        this.to_ledger_id = to_ledger_id;
     }
-    get_from_network_id() {
-        return this.from_network_id;
+    get_from_ledger_id() {
+        return this.from_ledger_id;
     }
-    set_from_network_id() {
-        return this.from_network_id;
-    }
-    get_to_account_id() {
-        return this.to_account_id;
-    }
-    set_to_account_id(to_account_id) {
-        this.to_account_id = to_account_id;
-    }
-    get_from_account_id() {
-        return this.from_account_id;
-    }
-    set_from_account_id(from_account_id) {
-        this.from_account_id = from_account_id;
+    set_from_ledger_id(from_ledger_id) {
+        this.from_ledger_id = from_ledger_id;
     }
     get_gas_price() {
         return this.gas_price;
@@ -129,56 +105,38 @@ class XTransactionHeader {
     set_expire_duration(expire_duration) {
         this.expire_duration = expire_duration;
     }
-    get_fire_timestamp() {
-        return this.fire_timestamp;
+    get_send_timestamp() {
+        return this.send_timestamp;
     }
-    set_fire_timestamp(fire_timestamp) {
-        this.fire_timestamp = fire_timestamp;
-    }
-
-    get_trans_random_nounce() {
-        return this.trans_random_nounce;
+    set_send_timestamp(send_timestamp) {
+        this.send_timestamp = send_timestamp;
     }
 
-    set_trans_random_nounce(trans_random_nounce) {
-        this.trans_random_nounce = trans_random_nounce;
+    get_tx_random_nonce() {
+        return this.tx_random_nonce;
     }
 
-    get_hash_work_proof() {
-        return this.hash_work_proof;
+    set_tx_random_nounce(tx_random_nonce) {
+        this.tx_random_nonce = tx_random_nonce;
     }
-    set_hash_work_proof(hash_work_proof) {
-        return  this.hash_work_proof;
+
+    get_premium_price() {
+        return this.premium_price;
     }
-    get_last_unit_hight() {
-        return this.last_unit_hight;
+    set_premium_price(premium_price) {
+        return  this.premium_price;
     }
-    set_last_unit_hight(last_unit_high) {
-        this.last_unit_hight = last_unit_high;
+    get_last_tx_nonce() {
+        return this.last_tx_nonce;
     }
-    get_last_unit_hash() {
-        return this.last_unit_hash;
+    set_last_tx_nonce(last_tx_nonce) {
+        this.last_tx_nonce = last_tx_nonce;
     }
-    set_last_unit_hash(last_unit_hash) {
-        this.last_unit_hash = last_unit_hash;
+    get_last_tx_hash() {
+        return this.last_tx_hash;
     }
-    get_last_trans_nonce() {
-        return this.last_trans_nonce;
-    }
-    set_last_trans_nonce(last_trans_nonce) {
-        this.last_trans_nonce = last_trans_nonce;
-    }
-    get_last_trans_hash() {
-        return this.last_trans_hash;
-    }
-    set_last_trans_hash(last_trans_hash) {
-        this.last_trans_hash = last_trans_hash;
-    }
-    get_parent_account() {
-        return this.parent_account;
-    }
-    set_parent_account(parent_account) {
-        this.parent_account = parent_account;
+    set_last_tx_hash(last_tx_hash) {
+        this.last_tx_hash = last_tx_hash;
     }
     get_authority_keys() {
         return this.authority_keys;

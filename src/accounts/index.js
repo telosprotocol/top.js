@@ -3,12 +3,13 @@ const secp256k1 = require('secp256k1');
 const randombytes = require('randombytes');
 
 const Account = require('./models/Account');
-const StringUtil = require("../utils");
+const StringUtil = require("./util/Convert");
 
 const addressTypeEnum = require('./models/addressType');
 const netTypeEnum = require('./models/netType');
 const addressTools = require('./address');
 const crypto = require('./crypto');
+const ethAccounts = require('web3-eth-accounts');
 
 class Accounts{
 
@@ -19,41 +20,50 @@ class Accounts{
      */
     generate(option = {}) {
         let { privateKey, addressType, parentAddress, netType } = option;
-        addressType = addressType === undefined ? addressTypeEnum.main : addressType;
+        addressType = addressType === undefined ? addressTypeEnum.T8 : addressType;
         netType = netType === undefined ? netTypeEnum.main : netType;
 
-        let privateKeyBytes = this.getPrivateKeyBytes(privateKey);
+        let privateKeyBytes;
+        if (!privateKey) {
+            do {
+                privateKeyBytes = randombytes(32);
+            } while (!secp256k1.privateKeyVerify(privateKeyBytes));
+            privateKey = StringUtil.bytes2hex(privateKeyBytes);
+        } else {
+            if (privateKey.startsWith('0x')) {
+                privateKey = privateKey.replace('0x', '');
+            }
+            if (privateKey.length == 44) {
+                privateKey = Buffer.from(privateKey, 'base64').toString('hex');
+                addressType = addressTypeEnum.main;
+            } else if (privateKey.length != 64) {
+                throw new Error("Private key must be 32 bytes long");
+            }
+            privateKeyBytes = Buffer.from(StringUtil.hex2bytes(privateKey))
+        }
+
+        if (addressType == addressTypeEnum.T8) {
+            let a = new ethAccounts();
+            let result = a.privateKeyToAccount(privateKey);
+            return new Account({
+                address: "T" + addressType + "0000" + result.address.replace('0x', ''), 
+                privateKey: privateKey,
+                publicKey: '',
+                privateKeyBytes
+            });
+        }
+
         let publicKeyBytes = secp256k1.publicKeyCreate(privateKeyBytes, false);
         let address = this.getAddress({
             publicKeyBytes, parentAddress, netType, addressType
         });
         
         return new Account({
-            address: "T-" + addressType + "-" + address, 
+            address: "T" + addressType + "0000" + address, 
             privateKey: StringUtil.bytes2hex(privateKeyBytes),
             publicKey: StringUtil.bytes2hex(publicKeyBytes),
             privateKeyBytes
         });
-    }
-
-    generateSubAccount(option){
-        const { privateKey, parentAddress, netType } = option;
-        if (!parentAddress) {
-            throw new Error('sub account need parent address');
-        }
-        option.addressType = addressTypeEnum.sub;
-
-        return this.generate(option);
-    }
-
-    generateContractAccount(option){
-        const { privateKey, parentAddress, netType } = option;
-        if (!parentAddress) {
-            throw new Error('contract account need parent address');
-        }
-        option.addressType = addressTypeEnum.contract;
-
-        return this.generate(option);
     }
 
     getPrivateKeyBytes(privateKey) {

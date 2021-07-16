@@ -4,7 +4,7 @@ const methods = require('./methods');
 class MethodFactory {
 
     constructor(options = {}) {
-        this.methods = methods;
+        this.methods = options.methods ? options.methods : methods;
         this.pollCount = options.pollCount;
         this.pollDelayTime = options.pollDelayTime;
     }

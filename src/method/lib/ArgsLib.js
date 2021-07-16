@@ -19,7 +19,7 @@ class ArgsLib{
     }) {
         let parameters = {
             version: config.Version,
-            account_address: address,
+            target_account_addr: address,
             token,
             method,
             sequence_id
@@ -27,7 +27,7 @@ class ArgsLib{
         const params = {
             version: config.Version,
             method,
-            account_address: address,
+            target_account_addr: address,
             sequence_id,
         }
         const transAction = new XTransaction();
@@ -44,18 +44,11 @@ class ArgsLib{
 
         transAction.set_digest();
         const hash =  transAction.get_transaction_hash();
-        const hash_buffer = Buffer.from(hash.array);
-        const private_key_buffer = Buffer.from(privateKeyBytes);
-        const secp256k1_sign = secp256k1.sign(hash_buffer, private_key_buffer);
-        let stream = new ByteBuffer().littleEndian();
-        stream.byte(secp256k1_sign.recovery).byteArray(secp256k1_sign.signature,secp256k1_sign.signature.length);
-        const stream_array =  new Uint8Array(stream.pack());
-        const auth_hex = "0x" + StringUtil.bytes2hex(stream_array);
         
         sourceAction.set_action_param("0x" + StringUtil.bytes2hex(sourceAction.get_action_param()));
         targetAction.set_action_param("0x" + StringUtil.bytes2hex(targetAction.get_action_param()));
 
-        transAction.set_authorization(auth_hex);
+        // transAction.set_authorization(auth_hex);
         transAction.set_transaction_hash(hash.hex);
 
         params.params = transAction;

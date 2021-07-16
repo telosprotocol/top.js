@@ -30,12 +30,12 @@ class XAction {
                 .byteArray(this.action_param,this.action_param.length);
         }
         stream.string(this.action_ext);
-        if (!this.action_authorization) {
+        // if (!this.action_authorization) {
             stream.string(this.action_authorization);
-        } else {
-            const authBytes = StringUtil.hex2bytes(this.action_authorization.replace("0x",""));
-            stream.uint32(authBytes.length).byteArray(authBytes, authBytes.length);
-        }
+        // } else {
+        //     const authBytes = StringUtil.hex2bytes(this.action_authorization.replace("0x",""));
+        //     stream.uint32(authBytes.length).byteArray(authBytes, authBytes.length);
+        // }
 
         const end_pos = new Uint8Array(stream.pack()).length;
         return end_pos - begin_pos;

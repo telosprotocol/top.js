@@ -5,7 +5,7 @@ class GetAccountMethod extends AbstractMethod {
 
     constructor(moduleInstance) {
         super({
-            methodName: 'account_info'
+            methodName: 'getAccount'
         }, moduleInstance);
         this.account = null;
     }
@@ -30,7 +30,7 @@ class GetAccountMethod extends AbstractMethod {
 
         let parameters = {
             version: '1.0',
-            account_address: address,
+            target_account_addr: address,
             token,
             method: this._methodName,
             sequence_id
@@ -38,9 +38,9 @@ class GetAccountMethod extends AbstractMethod {
         const params = {
             version: '1.0',
             method: this._methodName,
-            account_address: address,
+            target_account_addr: address,
             sequence_id,
-            params: { account: address }
+            params: { account_addr: address }
         }
         parameters.body = JSON.stringify(params);
         return parameters;

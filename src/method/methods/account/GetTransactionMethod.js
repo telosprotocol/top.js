@@ -6,7 +6,7 @@ class GetTransactionMethod extends AbstractMethod {
 
     constructor(moduleInstance) {
         super({
-            methodName: 'account_transaction'
+            methodName: 'getTransaction'
         }, moduleInstance);
     }
 
@@ -29,7 +29,7 @@ class GetTransactionMethod extends AbstractMethod {
         txHash = txHash ? txHash : last_hash;
         let parameters = {
             version: '1.0',
-            account_address: address,
+            target_account_addr: address,
             token,
             method: this._methodName,
             sequence_id
@@ -37,7 +37,7 @@ class GetTransactionMethod extends AbstractMethod {
         const params = {
             version: '1.0',
             method: this._methodName,
-            account_address: address,
+            target_account_addr: address,
             sequence_id,
             params: { 
                 account: address,
