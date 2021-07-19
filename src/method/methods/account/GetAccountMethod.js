@@ -20,13 +20,10 @@ class GetAccountMethod extends AbstractMethod {
      * @returns {Object}
      */
     getArgs(methodArguments) {
-        let {
-            account
-        } = methodArguments[0] || {};
-        account = account ? account : this.moduleInstance.defaultAccount;
-        this.account = account;
-
-        let { address, sequence_id, token } = account;
+        let { address, sequence_id, token } = methodArguments[0];
+        address = typeof(address) === 'undefined' ? this.moduleInstance.defaultAccount.address : address;
+        token = typeof(token) === 'undefined' ? '' : token;
+        sequence_id = typeof(sequence_id) === 'undefined' ? new Date().getTime() : sequence_id;
 
         let parameters = {
             version: '1.0',
@@ -56,27 +53,6 @@ class GetAccountMethod extends AbstractMethod {
      * @returns {*}
      */
     afterExecution(response) {
-        if (response.errno !== 0) {
-            return;
-        }
-        if (response.sequence_id) {
-            this.account.sequence_id = response.sequence_id;
-        }
-        if (response.data && response.data.balance) {
-            this.account.balance = response.data.balance;
-        }
-        if (response.data && response.data.last_hash) {
-            this.account.last_hash = response.data.last_hash;
-        }
-        if (response.data && response.data.nonce) {
-            this.account.nonce = response.data.nonce;
-        }
-        if (response.data && response.data.last_unit_height) {
-            this.account.last_unit_height = response.data.last_unit_height;
-        }
-        if (response.data && response.data.last_hash_xxhash64) {
-            this.account.last_hash_xxhash64 = response.data.last_hash_xxhash64;
-        }
         return response;
     }
 }

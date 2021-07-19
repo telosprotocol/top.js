@@ -7,38 +7,36 @@ const XAction = require('./XAction');
 
 class XTransactionHeader {
     constructor() {
-        this.transaction_type = 0;
-        this.transaction_len = 0;
+        this.tx_type = 0;
+        this.tx_len = 0;
         this.tx_structure_version = 0;
         this.to_ledger_id = 0;
         this.from_ledger_id = 0;
-        this.gas_price = 0;
-        this.gas_limit = 0;
-        this.deposit = 0;
-        this.expire_duration = 0;
+        this.tx_deposit = 0;
+        this.tx_expire_duration = 0;
         this.send_timestamp = 0;
         this.tx_random_nonce = 0;
         this.premium_price = 0;
         this.last_tx_nonce  = 0;
         this.last_tx_hash  = "";
-        this.confirm_action = "";
-        this.authority_keys = "";
+        this.tx_hash  = "";
         this.ext = "";
         this.note = "";
+        this.challenge_proof = "";
     }
 
     serialize_write(stream) {
         const begin_pos = new Uint8Array(stream.pack()).length;
-        last_trans_hash = this.last_tx_hash.replace("0x","");
+        let last_trans_hash = this.last_tx_hash.replace("0x","");
         let le_last_trans_hash =  StringUtil.little_endian(last_trans_hash);
         const last_trans_hash_byte = StringUtil.hex2bytes(le_last_trans_hash);
-        stream.ushort(this.transaction_type)
-            .ushort(this.transaction_len)
+        stream.ushort(this.tx_type)
+            .ushort(this.tx_len)
             .uint32(this.tx_structure_version)
             .ushort(this.to_ledger_id)
             .ushort(this.from_ledger_id)
-            .uint32(this.deposit)
-            .ushort(this.expire_duration)
+            .uint32(this.tx_deposit)
+            .ushort(this.tx_expire_duration)
             .int64(this.send_timestamp)
             .uint32(this.tx_random_nonce)
             .uint32(this.premium_price)
@@ -51,17 +49,17 @@ class XTransactionHeader {
         return end_pos - begin_pos;
     }
 
-    get_transaction_type() {
-        return this.transaction_type;
+    get_tx_type() {
+        return this.tx_type;
     }
-    set_transaction_type(transaction_type) {
-        this.transaction_type = transaction_type;
+    set_tx_type(tx_type) {
+        this.tx_type = tx_type;
     }
-    get_transaction_len() {
-        return this.transaction_len;
+    get_tx_len() {
+        return this.tx_len;
     }
-    set_transaction_len(transaction_len) {
-        this.transaction_len = transaction_len;
+    set_tx_len(tx_len) {
+        this.tx_len = tx_len;
     }
     get_tx_structure_version() {
         return this.tx_structure_version;
@@ -81,29 +79,17 @@ class XTransactionHeader {
     set_from_ledger_id(from_ledger_id) {
         this.from_ledger_id = from_ledger_id;
     }
-    get_gas_price() {
-        return this.gas_price;
+    set_tx_deposit(tx_deposit) {
+        this.tx_deposit = tx_deposit;
     }
-    set_gas_price(gas_price) {
-        this.gas_price = gas_price;
+    get_tx_deposit() {
+        return this.tx_deposit;
     }
-    get_gas_limit() {
-        return this.gas_limit;
+    get_tx_expire_duration() {
+        return this.tx_expire_duration;
     }
-    set_gas_limit(gas_limit) {
-        this.gas_limit = gas_limit;
-    }
-    set_deposit(deposit) {
-        this.deposit = deposit;
-    }
-    get_deposit() {
-        return this.deposit;
-    }
-    get_expire_duration() {
-        return this.expire_duration;
-    }
-    set_expire_duration(expire_duration) {
-        this.expire_duration = expire_duration;
+    set_tx_expire_duration(tx_expire_duration) {
+        this.tx_expire_duration = tx_expire_duration;
     }
     get_send_timestamp() {
         return this.send_timestamp;
@@ -124,7 +110,7 @@ class XTransactionHeader {
         return this.premium_price;
     }
     set_premium_price(premium_price) {
-        return  this.premium_price;
+        this.premium_price = premium_price;
     }
     get_last_tx_nonce() {
         return this.last_tx_nonce;
@@ -138,25 +124,29 @@ class XTransactionHeader {
     set_last_tx_hash(last_tx_hash) {
         this.last_tx_hash = last_tx_hash;
     }
-    get_authority_keys() {
-        return this.authority_keys;
+    get_tx_hash() {
+        return this.tx_hash;
     }
-    set_authority_keys(authority_keys) {
-        this.authority_keys = authority_keys;
+    set_tx_hash(tx_hash) {
+        this.tx_hash = tx_hash;
+    }
+    get_note() {
+        return this.note;
+    }
+    set_note(note) {
+        this.note = note;
     }
 }
 
 class XTransaction extends XTransactionHeader {
     constructor() {
         super();
-        this.source_action = new XAction();
-        this.target_action = new XAction();
-        this.transaction_hash = undefined;
         this.authorization = "";
+
+        this.sender_action = new XAction();
+        this.receiver_action = new XAction();
         this.public_key = "";
-        this.edge_nodeid = "";
         this.ext = "";
-        this.flag = 0;
         this.confirm_unit_info = {
             exec_status: 0
         };
@@ -164,8 +154,8 @@ class XTransaction extends XTransactionHeader {
     serialize_write(stream) {
         const begin_pos = new Uint8Array(stream.pack()).length;
         super.serialize_write(stream);
-        this.source_action.serialize_write(stream);
-        this.target_action.serialize_write(stream);
+        this.sender_action.serialize_write(stream);
+        this.receiver_action.serialize_write(stream);
         const end_pos = new Uint8Array(stream.pack()).length;
         return end_pos - begin_pos;
     }
@@ -174,23 +164,17 @@ class XTransaction extends XTransactionHeader {
         return this.execStatus == 1;
     }
 
-    get_source_action() {
-        return this.source_action;
+    get_sender_action() {
+        return this.sender_action;
     }
-    set_source_action(source_action) {
-        this.source_action = source_action;
+    set_sender_action(sender_action) {
+        this.sender_action = sender_action;
     }
-    get_target_action() {
-        return this.target_action;
+    get_receiver_action() {
+        return this.receiver_action;
     }
-    set_target_action(target_action) {
-        this.target_action = target_action;
-    }
-    get_transaction_hash() {
-        return this.transaction_hash;
-    }
-    set_transaction_hash(transaction_hash) {
-        this.transaction_hash = transaction_hash;
+    set_receiver_action(receiver_action) {
+        this.receiver_action = receiver_action;
     }
     get_authorization() {
         return this.authorization;
@@ -212,7 +196,7 @@ class XTransaction extends XTransactionHeader {
         hash.update(stream.pack());
         const hash_array = hash.array();
         const hash_hex = hash.hex();
-        this.transaction_hash = {array:hash_array,hex:"0x" + hash_hex};
+        this.tx_hash = {array:hash_array,hex:"0x" + hash_hex};
     }
 }
 

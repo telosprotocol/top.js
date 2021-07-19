@@ -55,14 +55,13 @@ class TopJs{
         this._currentProvider = resolvedProvider;
     }
 
-    async updateNonceAndLastHash(account) {
-        account = account ? account : this.defaultAccount;
-        let accountInfoResult = await this.getAccount({account});
+    async getNonceAndLastxxHash64(address) {
+        let accountInfoResult = await this.getAccount({address});
         if (accountInfoResult && accountInfoResult.errno == 0 && accountInfoResult.data) {
-            account.nonce = accountInfoResult.data.nonce;
-            account.last_hash = accountInfoResult.data.last_hash;
-            account.last_hash_xxhash64 = accountInfoResult.data.last_hash_xxhash64;
-            return account;
+            return {
+                nonce: accountInfoResult.data.nonce, 
+                latest_tx_hash_xxhash64: accountInfoResult.data.latest_tx_hash_xxhash64
+            };
         }
         throw new Error ('update account nonce and last hash failed');
     }
@@ -78,7 +77,7 @@ class TopJs{
         let stream = new ByteBuffer().littleEndian();
         stream.byte(secp256k1_sign.recovery).byteArray(secp256k1_sign.signature,secp256k1_sign.signature.length);
         const stream_array =  new Uint8Array(stream.pack());
-        const auth_hex = "0x" + StringUtil.bytes2hex(stream_array);
+        const auth_hex = "0x" + Buffer.from(stream_array, 'binary').toString('hex');
         return auth_hex;
     }
 
@@ -101,11 +100,11 @@ class TopJs{
             console.error(error);
             throw new Error ('parse transaction params error');
         }
-        let txHash = params.params.transaction_hash;
-        let authHex = this.sign(txHash.replace('0x',''), privateKey);
+        let txHash = params.params.tx_hash;
+        let authHex = await this.sign(Buffer.from(txHash.replace('0x',''), 'hex'), privateKey);
         params.params.authorization = authHex;
         data.body = JSON.stringify(params);
-        return parameters;
+        return data;
     }
 
     /**
@@ -115,10 +114,10 @@ class TopJs{
     async signAndSendTransaction(data){}
     async sendSignedTransaction(data, callback){
         try {
-            if (!this.moduleInstance.currentProvider) {
+            if (!this._currentProvider) {
                 throw new Error('provider is null');
             }
-            let response = await this.currentProvider.send(null, data);
+            let response = await this._currentProvider.send(null, data);
             // if (response && response.errno == 0 && response.tx_hash) {
             //     let obResult = await this.observeTransaction(this.methodArguments[0].account, response.tx_hash);
             //     if (obResult) {

@@ -5,9 +5,11 @@ const convert = require('./Convert');
 
 class ActionParam{
 
-    static ActionAssetOutParam(token_name,amount,memo) {
+    static ActionAssetOutParam(token_name,amount) {
+        token_name = typeof(token_name) === 'undefined' ? '' : token_name;
+        amount = typeof(amount) === 'undefined' ? 0 : amount;
         let stream = new ByteBuffer().littleEndian();
-        stream.string(token_name).int64(amount).string(memo);
+        stream.string(token_name).int64(amount);
         return stream.pack();
     };
 

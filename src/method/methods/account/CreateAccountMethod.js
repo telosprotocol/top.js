@@ -2,7 +2,8 @@ const AbstractObservedTransactionMethod = require('../../abstract/AbstractObserv
 const xActionType = require('../../model/XActionType');
 const xTransactionType = require('../../model/XTransactionType');
 const XTransaction = require('../../lib/XTransaction');
-const XAction = require('../../lib/XAction');
+const ReceiverAction = require('../../lib/ReceiverAction');
+const SenderAction = require('../../lib/SenderAction');
 const ByteBuffer = require('../../../utils/ByteBuffer');
 const secp256k1 = require('secp256k1');
 const StringUtil = require("../../../utils");
@@ -11,7 +12,7 @@ class CreateAccountMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
-            methodName: 'send_transaction',
+            methodName: 'sendTransaction',
             use_transaction: true,
         }, moduleInstance);
     }
@@ -37,13 +38,13 @@ class CreateAccountMethod extends AbstractObservedTransactionMethod {
             version: '1.0',
             target_account_addr: address,
             token,
-            method: 'send_transaction',
+            method: 'sendTransaction',
             sequence_id
         }
 
         const params = {
             version: '1.0',
-            method: true === this.use_transaction ? 'send_transaction' : this._methodName,
+            method: true === this.use_transaction ? 'sendTransaction' : this._methodName,
             target_account_addr: address,
             sequence_id,
         }
@@ -57,14 +58,14 @@ class CreateAccountMethod extends AbstractObservedTransactionMethod {
         transAction.set_last_trans_hash("0xF6E9BE5D70632CF5");
         transAction.set_deposit(100000);
 
-        const sourceAction = new XAction();
+        const sourceAction = new SenderAction();
         sourceAction.set_action_type(xActionType.SourceNull);
-        sourceAction.set_account_addr(address);
+        sourceAction.set_tx_sender_account_addr(address);
         sourceAction.set_action_param(new Uint8Array(0));
 
-        const targetAction = new XAction();
+        const targetAction = new ReceiverAction();
         targetAction.set_action_type(xActionType.CreateUserAccount);
-        targetAction.set_account_addr(address);
+        targetAction.set_tx_receiver_account_addr(address);
         let sb =new ByteBuffer().littleEndian();
         let _a_params = sb.string(address).pack();
         targetAction.set_action_param(_a_params);

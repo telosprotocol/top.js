@@ -2,7 +2,8 @@ const AbstractObservedTransactionMethod = require('../../abstract/AbstractObserv
 const xActionType = require('../../model/XActionType');
 const xTransactionType = require('../../model/XTransactionType');
 const XTransaction = require('../../lib/XTransaction');
-const XAction = require('../../lib/XAction');
+const ReceiverAction = require('../../lib/ReceiverAction');
+const SenderAction = require('../../lib/SenderAction');
 const ByteBuffer = require('../../../utils/ByteBuffer');
 const Secp256k1Helper = require('../../../utils/Secp256k1Helper');
 const StringUtil = require("../../../utils");
@@ -11,7 +12,7 @@ class DeployContractMethod extends AbstractObservedTransactionMethod {
 
     constructor(moduleInstance) {
         super({
-            methodName: 'send_transaction',
+            methodName: 'sendTransaction',
             use_transaction: true,
         }, moduleInstance);
     }
@@ -30,19 +31,19 @@ class DeployContractMethod extends AbstractObservedTransactionMethod {
             account,
         } = methodArguments[0] || {};
         account = account ? account : this.moduleInstance.defaultAccount;
-        let { address, sequence_id, token, privateKeyBytes, publicKey, last_hash_xxhash64, nonce, } = account;
+        let { address, sequence_id, token, privateKeyBytes, publicKey, latest_tx_hash_xxhash64, nonce, } = account;
 
         let parameters = {
             version: '1.0',
             target_account_addr: address,
             token,
-            method: 'send_transaction',
+            method: 'sendTransaction',
             sequence_id
         }
 
         const params = {
             version: '1.0',
-            method: true === this.use_transaction ? 'send_transaction' : this._methodName,
+            method: true === this.use_transaction ? 'sendTransaction' : this._methodName,
             target_account_addr: address,
             sequence_id,
         }
@@ -67,16 +68,16 @@ class DeployContractMethod extends AbstractObservedTransactionMethod {
         transAction.set_last_trans_hash(last_hash_xxhash64);
         transAction.set_deposit(100000);
 
-        const sourceAction = new XAction();
+        const sourceAction = new SenderAction();
         sourceAction.set_action_type(xActionType.CreateConstractAccount);
-        sourceAction.set_account_addr(address);
+        sourceAction.set_tx_sender_account_addr(address);
         let sb =new ByteBuffer().littleEndian();
         let _s_params = sb.string(type).int64(deposit).string(note).pack();
         sourceAction.set_action_param(_s_params);
 
-        const targetAction = new XAction();
+        const targetAction = new ReceiverAction();
         targetAction.set_action_type(xActionType.CreateConstractAccount);
-        targetAction.set_account_addr(contractAccount.address);
+        targetAction.set_tx_receiver_account_addr(contractAccount.address);
         let tb =new ByteBuffer().littleEndian();
         let _t_params = tb.int64(gasLimit).string(contractCode).pack();
         targetAction.set_action_param(_t_params);

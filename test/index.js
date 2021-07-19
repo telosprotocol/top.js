@@ -17,13 +17,11 @@ const test = async () => {
         pollDelayTime: 3000
     });
     let pAccount = topjs.accounts.generate({ privateKey: 'R9Pd5vh/dyI3IkKQrUsYFVq8t2L44JWWf4PW+RwwgQE='});
-    await topjs.passport({
-        account: pAccount
-    });
     let accountInfo = await topjs.getAccount({
-        account: pAccount
+        address: pAccount.address
     });
-    console.log('account balance >>> ', JSON.stringify(accountInfo.data));
+    console.log('account balance >>> ', accountInfo.data.balance);
+    console.log('account nonce >>> ', accountInfo.data.nonce);
 
     // topjs.getTransaction({
     //         account: pAccount,
@@ -33,13 +31,26 @@ const test = async () => {
     //     console.log(JSON.stringify(r))
     // });
     
-    // await topjs.updateNonceAndLastHash(pAccount);
-    let tx = topjs.transfer({
-        account: pAccount,
-        to: 'T80000968927100f3cb7b23e8d477298311648978d8613',
-        amount: 140,
-        data: 'hello top hahah hahah'
-    }).then(console.log);
+    let {nonce, latest_tx_hash_xxhash64} = await topjs.getNonceAndLastxxHash64(pAccount.address)
+
+    // nonce = 1;
+    // latest_tx_hash_xxhash64 = "0x27836cb7e51d9d3b";
+
+    let tx = await topjs.generateTx({
+        txMethod: 'transfer',
+        from: pAccount.address,
+        nonce,
+        latest_tx_hash_xxhash64,
+        to: 'T80000d50f507f4d81e5bff6759815dc3892d8a2909098',
+        amount: 10,
+        note: 'transfer test'
+    });
+
+
+    let signedTx = await topjs.signTransaction(tx, pAccount.privateKey);
+    console.log('tx json > ' + JSON.stringify(signedTx))
+    let result = await topjs.sendSignedTransaction(signedTx);
+    console.log('transfer tx > ' + JSON.stringify(result));
     
 
     // await topjs.stakeVote({
