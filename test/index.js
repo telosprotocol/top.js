@@ -4,12 +4,6 @@ const transferTest = require('./transferTest');
 const contractTest = require('./contractTest');
 const accountPropertyTest = require('./accountPropertyTest');
 
-const urlStr = 'http://192.168.50.171:19081';
-
-// transferTest(urlStr);
-// contractTest(urlStr);
-// accountPropertyTest();
-
 const test = async () => {
     
     const topjs = new TopJs('http://142.93.30.153:19081', {
@@ -22,6 +16,9 @@ const test = async () => {
     });
     console.log('account balance >>> ', accountInfo.data.balance);
     console.log('account nonce >>> ', accountInfo.data.nonce);
+    console.log('account unused_vote_amount >>> ', accountInfo.data.unused_vote_amount);
+    console.log('account vote_staked_token >>> ', accountInfo.data.vote_staked_token);
+    console.log('account vote_staked_index >>> ', JSON.stringify(accountInfo.data.vote_staked_index));
 
     // topjs.getTransaction({
     //         account: pAccount,
@@ -33,50 +30,42 @@ const test = async () => {
     
     let {nonce, latest_tx_hash_xxhash64} = await topjs.getNonceAndLastxxHash64(pAccount.address)
 
-    // nonce = 1;
-    // latest_tx_hash_xxhash64 = "0x27836cb7e51d9d3b";
+    /** transfer */
+    // let tx = await topjs.generateTx({
+    //     txMethod: 'transfer',
+    //     from: pAccount.address,
+    //     nonce,
+    //     latest_tx_hash_xxhash64,
+    //     to: 'T80000d50f507f4d81e5bff6759815dc3892d8a2909098',
+    //     amount: 10,
+    //     note: 'transfer test'
+    // });
 
+
+    /** stake vote */
+    // let tx = await topjs.generateTx({
+    //     txMethod: 'stakeVote',
+    //     from: pAccount.address,
+    //     nonce,
+    //     latest_tx_hash_xxhash64,
+    //     amount: 10002,
+    //     lockTime: 30
+    // });
+
+    /** un stake vote */
     let tx = await topjs.generateTx({
-        txMethod: 'transfer',
+        txMethod: 'unStakeVote',
         from: pAccount.address,
         nonce,
         latest_tx_hash_xxhash64,
-        to: 'T80000d50f507f4d81e5bff6759815dc3892d8a2909098',
-        amount: 10,
-        note: 'transfer test'
+        amount: 10002
     });
 
+    // topProvider.send(tx);
 
-    let signedTx = await topjs.signTransaction(tx, pAccount.privateKey);
-    console.log('tx json > ' + JSON.stringify(signedTx))
-    let result = await topjs.sendSignedTransaction(signedTx);
-    console.log('transfer tx > ' + JSON.stringify(result));
-    
-
-    // await topjs.stakeVote({
-    //     account: pAccount,
-    //     amount: 10020000,
-    //     lockTime: 30
-    // }).then(console.log);
-
-    // topjs.addProposal({
-    //     account: pAccount,
-    //     proposal: {
-    //         "proposalId":"sss",
-    //         "chainTimerHeight":40,
-    //         "deposit":400,
-    //         "modificationDescription":"ttt",
-    //         "newValue":"26",
-    //         "origValue":"10000",
-    //         "parameter":"archive_deposit",
-    //         "priority":3,
-    //         "proposalClientAddress":"T-0-1Kc3sQi7wiX9STHjCYMpxbER9daPXc7wNe",
-    //         "updateType":"update_action_parameter"
-    //     }
-    // }).then(console.log);
-    // topjs.getProposal({
-    //     account: pAccount,
-    //     proposalId: 'sss'
-    // }).then(console.log);
+    // let signedTx = await topjs.signTransaction(tx, pAccount.privateKey);
+    // console.log('tx json > ' + JSON.stringify(signedTx))
+    // let result = await topjs.sendSignedTransaction(signedTx);
+    // console.log('transfer tx > ' + JSON.stringify(result));
 }
 test();

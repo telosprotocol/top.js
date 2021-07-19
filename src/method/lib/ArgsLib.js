@@ -32,7 +32,6 @@ class ArgsLib{
         transAction.set_tx_type(xTransactionType);
         transAction.set_last_tx_nonce(nonce);
         let cur_timestamp = Math.round(new Date() / 1000);
-        // cur_timestamp = 1626683297;
         transAction.set_send_timestamp(cur_timestamp);
         transAction.set_tx_expire_duration(config.ExpireDuration);
         transAction.set_last_tx_hash(latest_tx_hash_xxhash64);

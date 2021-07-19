@@ -14,5 +14,8 @@ module.exports = {
     LockToken : 13,
     UnlockToken : 14,
     GetConsensusRandom : 16,
-    PledgeTokenVote: 21
+    PledgeTokenVote: 21,
+    RedeemTokenVote: 22,
+    PledgeToken: 23,
+    RedeemToken: 24
 }

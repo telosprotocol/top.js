@@ -35,12 +35,13 @@ class StakeVoteMethod extends AbstractObservedTransactionMethod {
         const txActionParam = stream.pack();
 
         const sourceAction = new SenderAction();
-        sourceAction.set_action_type(xActionType.PledgeTokenVote);
+        sourceAction.set_action_type(xActionType.SourceNull);
         sourceAction.set_tx_sender_account_addr(address);
-        sourceAction.set_action_param(txActionParam);
 
         const targetAction = new ReceiverAction();
         targetAction.set_tx_receiver_account_addr(address);
+        targetAction.set_action_type(xActionType.PledgeTokenVote);
+        targetAction.set_action_param(txActionParam);
         
         this.parameters = argsLib.getDefaultArgs({
             address,

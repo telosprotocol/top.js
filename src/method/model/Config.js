@@ -4,8 +4,8 @@ module.exports = {
     CreateAccountLastTransHash: '0xF6E9BE5D70632CF5',
     ExpireDuration: 100,
     PledgeSmartContract: 'T-s-odXwbxxU4cwSgQNxTiHdnm6yAbyqvWHgFj',
-    VoteContract:'T-s-oedRLvZ3eM5y6Xsgo4t137An61uoPiM9vS',
-    Registeration: 'T-x-qNaehjjvgj8zdsy6H1kcJjUrD4NxxWjJLV',
-    ClaimReward:'T-s-oedRLvZ3eM5y6Xsgo4t137An61uoPiM9vS',
-    BeaconCgc:'T-x-qZV6Nm6HdynbTPHwaGWj96cZyevzsyWHsU'
+    VoteContract:'T20000MVfDLsBKVcy1wMp4CoEHWxUeBEAVBL9ZEa',
+    Registeration: 'T2000138NZjvNJjRNG5iEqVKydpqAqoeNjBuFmNbj@0',
+    ClaimReward:'T20000MVfDLsBKVcy1wMp4CoEHWxUeBEAVBL9ZEa',
+    BeaconCgc:'T2000138Ao4jjYtrXoNwfzb6gdpD2XNBpqUv46p8B@0'
 }

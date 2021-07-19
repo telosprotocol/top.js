@@ -1,7 +1,7 @@
 const AbstractObservedTransactionMethod = require('../../abstract/AbstractObservedTransactionMethod');
 const xActionType = require('../../model/XActionType');
 const xTransactionType = require('../../model/XTransactionType');
-const actionParam = require('../../../utils/ActionParam');
+const ByteBuffer = require('../../../utils/ByteBuffer');
 const ReceiverAction = require('../../lib/ReceiverAction');
 const SenderAction = require('../../lib/SenderAction');
 const argsLib = require('../../lib/ArgsLib');
@@ -38,6 +38,7 @@ class UnStakeVoteMethod extends AbstractObservedTransactionMethod {
 
         const targetAction = new ReceiverAction();
         targetAction.set_tx_receiver_account_addr(address);
+        targetAction.set_action_type(xActionType.RedeemTokenVote);
         targetAction.set_action_param(txActionParam);
         
         this.parameters = argsLib.getDefaultArgs({
