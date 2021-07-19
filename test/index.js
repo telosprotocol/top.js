@@ -20,13 +20,12 @@ const test = async () => {
     console.log('account vote_staked_token >>> ', accountInfo.data.vote_staked_token);
     console.log('account vote_staked_index >>> ', JSON.stringify(accountInfo.data.vote_staked_index));
 
-    // topjs.getTransaction({
-    //         account: pAccount,
-    //     txHash: '0xf0bc34ff1dbb0be4296b4178109b9a7c4585cad3c17b3983551e092335a0276a'
-    // }).then(r => {
-    //     console.log(r.data.confirm_unit_info.exec_status);
-    //     console.log(JSON.stringify(r))
-    // });
+    topjs.getTransaction({
+        address: pAccount.address,
+        txHash: '0x0dfb56f4eed918455f430d07c33433775c2b276f671010181bceaa16589f8558'
+    }).then(r => {
+        console.log('tx hash > ' + JSON.stringify(r))
+    });
     
     let {nonce, latest_tx_hash_xxhash64} = await topjs.getNonceAndLastxxHash64(pAccount.address)
 
@@ -52,20 +51,60 @@ const test = async () => {
     //     lockTime: 30
     // });
 
-    /** un stake vote */
-    let tx = await topjs.generateTx({
-        txMethod: 'unStakeVote',
-        from: pAccount.address,
-        nonce,
-        latest_tx_hash_xxhash64,
-        amount: 10002
-    });
+    // /** un stake vote */
+    // // let tx = await topjs.generateTx({
+    // //     txMethod: 'unStakeVote',
+    // //     from: pAccount.address,
+    // //     nonce,
+    // //     latest_tx_hash_xxhash64,
+    // //     amount: 10002
+    // // });
 
-    // topProvider.send(tx);
+     /** vote node */
+    // let tx = await topjs.generateTx({
+    //     txMethod: 'voteNode',
+    //     from: pAccount.address,
+    //     nonce,
+    //     latest_tx_hash_xxhash64,
+    //     voteInfoArray: [
+    //         {
+    //             nodeAddress: 'T00000LKF18dpN5yGuBBpg38ZQyC8vpdzy6YQfPe',
+    //             voteCount: 100
+    //         }
+    //     ]
+    // });
+
+    /** un vote node */
+    // let tx = await topjs.generateTx({
+    //     txMethod: 'unVoteNode',
+    //     from: pAccount.address,
+    //     nonce,
+    //     latest_tx_hash_xxhash64,
+    //     voteInfoArray: [
+    //         {
+    //             nodeAddress: 'T00000LKF18dpN5yGuBBpg38ZQyC8vpdzy6YQfPe',
+    //             voteCount: 50
+    //         }
+    //     ]
+    // });
+
+    /** claim voter dividend */
+    // let tx = await topjs.generateTx({
+    //     txMethod: 'claimVoterDividend',
+    //     from: pAccount.address,
+    //     nonce,
+    //     latest_tx_hash_xxhash64
+    // });
 
     // let signedTx = await topjs.signTransaction(tx, pAccount.privateKey);
     // console.log('tx json > ' + JSON.stringify(signedTx))
     // let result = await topjs.sendSignedTransaction(signedTx);
     // console.log('transfer tx > ' + JSON.stringify(result));
+
+
+    let voteUsedResult = await topjs.listVoteUsed({
+        account_addr: pAccount.address
+    })
+    console.log('voteUsedResult > ' + JSON.stringify(voteUsedResult));
 }
 test();

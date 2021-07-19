@@ -41,7 +41,7 @@ class GetTransactionMethod extends AbstractMethod {
             target_account_addr: address,
             sequence_id,
             params: { 
-                account: address,
+                account_addr: address,
                 tx_hash: txHash
             }
         }

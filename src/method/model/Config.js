@@ -6,6 +6,6 @@ module.exports = {
     PledgeSmartContract: 'T-s-odXwbxxU4cwSgQNxTiHdnm6yAbyqvWHgFj',
     VoteContract:'T20000MVfDLsBKVcy1wMp4CoEHWxUeBEAVBL9ZEa',
     Registeration: 'T2000138NZjvNJjRNG5iEqVKydpqAqoeNjBuFmNbj@0',
-    ClaimReward:'T20000MVfDLsBKVcy1wMp4CoEHWxUeBEAVBL9ZEa',
+    ClaimReward:'T20000MTotTKfAJRxrfvEwEJvtgCqzH9GkpMmAUg',
     BeaconCgc:'T2000138Ao4jjYtrXoNwfzb6gdpD2XNBpqUv46p8B@0'
 }

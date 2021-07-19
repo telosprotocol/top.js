@@ -41,7 +41,7 @@ class ClaimVoterDividendMethod extends AbstractObservedTransactionMethod {
         const targetAction = new ReceiverAction();
         targetAction.set_action_type(xActionType.RunConstract);
         targetAction.set_tx_receiver_account_addr(config.ClaimReward);
-        targetAction.set_acton_name("claim_reward");
+        targetAction.set_acton_name("claimVoterDividend");
         
         this.parameters = argsLib.getDefaultArgs({
             address,

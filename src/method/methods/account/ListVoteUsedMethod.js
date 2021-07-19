@@ -5,7 +5,7 @@ class ListVoteUsedMethod extends AbstractMethod {
 
     constructor(moduleInstance) {
         super({
-            methodName: 'get_vote_dist'
+            methodName: 'listVoteUsed'
         }, moduleInstance);
     }
 
@@ -19,11 +19,10 @@ class ListVoteUsedMethod extends AbstractMethod {
      * @returns {Object}
      */
     getArgs(methodArguments) {
-        let {
-            account,
-        } = methodArguments[0] || {};
-        account = account ? account : this.moduleInstance.defaultAccount;
-        let { address, sequence_id, token } = account;
+        let { address, sequence_id, token, account_addr } = methodArguments[0];
+        address = typeof(address) === 'undefined' ? this.moduleInstance.defaultAccount.address : address;
+        token = typeof(token) === 'undefined' ? '' : token;
+        sequence_id = typeof(sequence_id) === 'undefined' ? new Date().getTime() : sequence_id;
         
         let parameters = {
             version: '1.0',
@@ -32,12 +31,15 @@ class ListVoteUsedMethod extends AbstractMethod {
             method: this._methodName,
             sequence_id
         }
+        let args = { account_addr:address };
+        if (typeof(account_addr) !== 'undefined') {
+            args['node_account_addr'] = account_addr;
+        }
         const params = {
-            version: '1.0',
-            method: this._methodName,
-            target_account_addr: address,
-            sequence_id,
-            params: { account:address }
+            params: { 
+                account_addr: address,
+                node_account_addr: typeof(account_addr) === 'undefined' ? address : account_addr
+            }
         }
         parameters.body = JSON.stringify(params);
         return parameters;
