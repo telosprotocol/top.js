@@ -46,7 +46,7 @@ class Accounts{
             let a = new ethAccounts();
             let result = a.privateKeyToAccount(privateKey);
             return new Account({
-                address: "T" + addressType + "0000" + result.address.replace('0x', ''), 
+                address: "T" + addressType + "0000" + result.address.replace('0x', '').toLocaleLowerCase(), 
                 privateKey: privateKey,
                 publicKey: '',
                 privateKeyBytes
