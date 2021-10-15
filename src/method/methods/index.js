@@ -43,6 +43,7 @@ exports.getBlock = require('./block/GetBlockMethod');
 // chainInfo
 exports.getChainInfo = require('./chain/GetChainInfoMethod');
 exports.getEdgeStatus = require('./chain/GetEdgeStatusMethod');
+exports.getCGP = require('./chain/GetCGPMethod');
 
 // vote
 exports.stakeVote = require('./account/StakeVoteMethod');
