@@ -39,6 +39,7 @@ exports.udpateNodeType = require('./node/UpdateNodeTypeMethod');
 
 // block
 exports.getBlock = require('./block/GetBlockMethod');
+exports.getLatestTables = require('./block/GetLatestTablesMethod');
 
 // chainInfo
 exports.getChainInfo = require('./chain/GetChainInfoMethod');

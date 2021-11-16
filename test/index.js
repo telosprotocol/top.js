@@ -20,15 +20,16 @@ const test = async () => {
         address: 'T00000LXfWvHrkHxuPbYdrax9Dit6f1rw2DcsEEy' //pAccount.address
     });
 
-    console.log('account address >>> ', pAccount.address);
-    console.log('account balance >>> ', accountInfo.data.balance);
-    console.log('account nonce >>> ', accountInfo.data.nonce);
-    console.log('account unused_vote_amount >>> ', accountInfo.data.unused_vote_amount);
-    console.log('account vote_staked_token >>> ', accountInfo.data.vote_staked_token);
-    console.log('account vote_staked_index >>> ', JSON.stringify(accountInfo.data.vote_staked_index));
+    // console.log('account address >>> ', pAccount.address);
+    // console.log('account balance >>> ', accountInfo.data.balance);
+    // console.log('account nonce >>> ', accountInfo.data.nonce);
+    // console.log('account unused_vote_amount >>> ', accountInfo.data.unused_vote_amount);
+    // console.log('account vote_staked_token >>> ', accountInfo.data.vote_staked_token);
+    // console.log('account vote_staked_index >>> ', JSON.stringify(accountInfo.data.vote_staked_index));
+    console.log('account  >>> ', JSON.stringify(accountInfo.data));
 
-    let cgpInfo = await topjs.getCGP();
-    console.log('cgp > ' + JSON.stringify(cgpInfo));
+    // let cgpInfo = await topjs.getCGP();
+    // console.log('cgp > ' + JSON.stringify(cgpInfo));
 
     // topjs.getTransaction({
     //     address: pAccount.address,
@@ -36,8 +37,19 @@ const test = async () => {
     // }).then(r => {
     //     console.log('tx hash > ' + JSON.stringify(r))
     // });
-    
+
     // let {nonce, latest_tx_hash_xxhash64} = await topjs.getNonceAndLastxxHash64(pAccount.address)
+
+    // topjs.getBlock({
+    //     tableBlockAddress: 'Ta0000@3',
+    //     height: 13
+    // }).then(r => {
+    //     console.log('table block result > ' + JSON.stringify(r))
+    // });
+
+    // topjs.getLatestTables().then(r => {
+    //     console.log('latest tables result > ' + JSON.stringify(r))
+    // });
 
     /** transfer */
     // let tx = await topjs.generateTx({

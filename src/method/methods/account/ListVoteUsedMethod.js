@@ -19,7 +19,7 @@ class ListVoteUsedMethod extends AbstractMethod {
      * @returns {Object}
      */
     getArgs(methodArguments) {
-        let { address, sequence_id, token, account_addr } = methodArguments[0];
+        let { address, sequence_id, token, account_addr } = methodArguments[0] || {};
         address = typeof(address) === 'undefined' ? this.moduleInstance.defaultAccount.address : address;
         token = typeof(token) === 'undefined' ? '' : token;
         sequence_id = typeof(sequence_id) === 'undefined' ? new Date().getTime() : sequence_id;

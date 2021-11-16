@@ -21,23 +21,11 @@ class GetBlockMethod extends AbstractMethod {
      * @returns {Object}
      */
     getArgs(methodArguments) {
-        let {
-            account,
-            blockType,
-            type,
-            height
-        } = methodArguments[0] || {};
-        account = account ? account : this.moduleInstance.defaultAccount;
-        this.account = account;
 
-        let { address, sequence_id, token } = account;
-        blockType = blockType ? blockType : 2;
-        type = type && (type == 'last' || type == 'height') ? type : 'last';
-
-        let blockOwnerAddress = address;
-        if (blockType && blockType == 3) {
-            blockOwnerAddress = address + '-' + utils.addressToTableId(address);
-        }
+        let { address, sequence_id, token, tableBlockAddress, height } = methodArguments[0] || {};
+        address = typeof(address) === 'undefined' ? this.moduleInstance.defaultAccount.address : address;
+        token = typeof(token) === 'undefined' ? '' : token;
+        sequence_id = typeof(sequence_id) === 'undefined' ? new Date().getTime() : sequence_id;
 
         let parameters = {
             version: '1.0',
@@ -53,10 +41,8 @@ class GetBlockMethod extends AbstractMethod {
             sequence_id,
             params: { 
                 action: this._methodName,
-                account: blockOwnerAddress,
-                type,
-                block_type: blockType,
-                unit_height: height
+                account_addr: tableBlockAddress,
+                height
              }
         }
         parameters.body = JSON.stringify(params);
