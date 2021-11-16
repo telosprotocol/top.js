@@ -10,7 +10,7 @@
   "author": "sawyer.song@topnetwork.org",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.2",
     "base32": "^0.0.6",
     "bs58check": "^2.0.0",
     "create-hash": "^1.1.0",
