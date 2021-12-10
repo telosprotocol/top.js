@@ -22,20 +22,21 @@ class GetBlockMethod extends AbstractMethod {
      */
     getArgs(methodArguments) {
 
-        let { address, sequence_id, token, tableBlockAddress, height } = methodArguments[0] || {};
+        let { address, sequence_id, token, tableBlockAddress, height, version } = methodArguments[0] || {};
         address = typeof(address) === 'undefined' ? this.moduleInstance.defaultAccount.address : address;
+        version = typeof(version) === 'undefined' ? '2.0' : version;
         token = typeof(token) === 'undefined' ? '' : token;
         sequence_id = typeof(sequence_id) === 'undefined' ? new Date().getTime() : sequence_id;
 
         let parameters = {
-            version: '1.0',
+            version,
             target_account_addr: address,
             token,
             method: this._methodName,
             sequence_id
         }
         const params = {
-            version: '1.0',
+            version,
             method: this._methodName,
             target_account_addr: address,
             sequence_id,

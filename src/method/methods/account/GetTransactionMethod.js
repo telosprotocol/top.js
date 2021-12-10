@@ -20,23 +20,24 @@ class GetTransactionMethod extends AbstractMethod {
      * @returns {Object}
      */
     getArgs(methodArguments) {
-        let { address, sequence_id, token, txHash } = methodArguments[0] || {};
+        let { address, sequence_id, token, txHash, version } = methodArguments[0] || {};
         address = typeof(address) === 'undefined' ? this.moduleInstance.defaultAccount.address : address;
         token = typeof(token) === 'undefined' ? '' : token;
+        version = typeof(version) === 'undefined' ? '2.0' : version;
         sequence_id = typeof(sequence_id) === 'undefined' ? new Date().getTime() : sequence_id;
 
         if (!txHash) {
             throw new Error('tx hash is required!');
         }
         let parameters = {
-            version: '1.0',
+            version,
             target_account_addr: address,
             token,
             method: this._methodName,
             sequence_id
         }
         const params = {
-            version: '1.0',
+            version,
             method: this._methodName,
             target_account_addr: address,
             sequence_id,
