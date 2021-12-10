@@ -40,7 +40,7 @@ class UnStakeGasMethod extends AbstractObservedTransactionMethod {
 
         const targetAction = new ReceiverAction();
         targetAction.set_action_type(xActionType.RunConstract);
-        targetAction.set_tx_receiver_account_addr(config.PledgeSmartContract);
+        targetAction.set_tx_receiver_account_addr(address);
         targetAction.set_acton_name("redeem_token")
         targetAction.set_action_param(txActionParam);
         

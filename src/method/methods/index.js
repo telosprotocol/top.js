@@ -14,15 +14,11 @@ exports.passport = require('./account/PassportMethod');
 exports.transfer = require('./account/TransferMethod');
 
 // contract
-exports.deployContract = require('./account/DeployContractMethod');
 exports.getProperty = require('./account/GetPropertyMethod');
-exports.callContract = require('./account/CallContractMethod');
 
 // pledge nad redeem
-exports.stakeDisk = require('./account/StakeDiskMethod');
 exports.stakeGas = require('./account/StakeGasMethod');
-exports.unStakeDisk = require('./account/UnStakeDiskMethod');
-exports.unStakeTgas = require('./account/UnStakeGasMethod');
+exports.unStakeGas = require('./account/UnStakeGasMethod');
 
 // node register and deRegister
 exports.registerNode = require('./node/RegisterNodeMethod');

@@ -1,25 +1,26 @@
 const StringUtil = require("../../utils");
 const XTransaction = require('./XTransaction');
 const config = require('../model/Config');
+const XTransactionType = require('../model/XTransactionType');
 
 class ArgsLib{
     static getDefaultArgs({
         address,
         sequence_id,
         token,
-        latest_tx_hash_xxhash64,
         nonce,
         method,
         xTransactionType,
         sourceAction,
         targetAction,
-        note
+        note,
+        amount
     }) {
         token = typeof(token) === 'undefined' ? '' : token;
         note = typeof(note) === 'undefined' ? '' : note;
         sequence_id = typeof(sequence_id) === 'undefined' ? new Date().getTime() : sequence_id;
-        if (typeof(latest_tx_hash_xxhash64) === 'undefined' || typeof(nonce) === 'undefined') {
-            throw new Error('latest tx xxhash64 and nonce is required!')
+        if (typeof(nonce) === 'undefined') {
+            throw new Error('nonce is required!')
         }
         let parameters = {
             version: config.Version,
@@ -34,20 +35,27 @@ class ArgsLib{
         let cur_timestamp = Math.round(new Date() / 1000);
         transAction.set_send_timestamp(cur_timestamp);
         transAction.set_tx_expire_duration(config.ExpireDuration);
-        transAction.set_last_tx_hash(latest_tx_hash_xxhash64);
         transAction.set_tx_deposit(config.Deposit);
         transAction.set_note(note);
-        
-        transAction.set_sender_action(sourceAction);
-        transAction.set_receiver_action(targetAction);
+        transAction.set_tx_structure_version(2);
+
+        transAction.set_sender_account(sourceAction.get_tx_sender_account_addr());
+        transAction.set_receiver_account(targetAction.get_tx_receiver_account_addr());
+        if(xTransactionType != XTransactionType.Transfer) {
+            transAction.set_sender_action_name(sourceAction.get_action_name());
+            transAction.set_sender_action_param(sourceAction.get_action_param());
+            transAction.set_receiver_action_name(targetAction.get_action_name());
+            transAction.set_receiver_action_param(targetAction.get_action_param());
+        } else {
+            transAction.set_amount(amount);
+        }
 
         transAction.set_digest();
         const hash =  transAction.get_tx_hash();
         
-        sourceAction.set_action_param("0x" + StringUtil.bytes2hex(sourceAction.get_action_param()));
-        targetAction.set_action_param("0x" + StringUtil.bytes2hex(targetAction.get_action_param()));
+        transAction.set_sender_action_param("0x" + StringUtil.bytes2hex(transAction.get_sender_action_param()));
+        transAction.set_receiver_action_param("0x" + StringUtil.bytes2hex(transAction.get_receiver_action_param()));
 
-        // transAction.set_authorization(auth_hex);
         transAction.set_tx_hash(hash.hex);
 
         this.transAction = transAction;

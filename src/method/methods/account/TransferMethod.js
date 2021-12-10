@@ -55,7 +55,8 @@ class TransferMethod extends AbstractObservedTransactionMethod {
             xTransactionType: xTransactionType.Transfer,
             sourceAction,
             targetAction,
-            note
+            note,
+            amount
         });
         return this.parameters;
     }

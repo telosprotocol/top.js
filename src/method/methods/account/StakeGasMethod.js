@@ -35,12 +35,10 @@ class StakeGasMethod extends AbstractObservedTransactionMethod {
         const sourceAction = new SenderAction();
         sourceAction.set_action_type(xActionType.AssertOut);
         sourceAction.set_tx_sender_account_addr(address);
-        sourceAction.set_action_param(txActionParam);
 
         const targetAction = new ReceiverAction();
         targetAction.set_action_type(xActionType.RunConstract);
-        targetAction.set_tx_receiver_account_addr(config.PledgeSmartContract);
-        targetAction.set_acton_name("pledge_token")
+        targetAction.set_tx_receiver_account_addr(address);
         targetAction.set_action_param(txActionParam);
         
         this.parameters = argsLib.getDefaultArgs({
